@@ -1,0 +1,60 @@
+@import '../../styles/colors';
+
+.header {
+  z-index: 1;
+  position: relative;
+  width: 100%;
+  background-color: #ffffff;
+  box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.2);
+  height: 60px;
+  display: flex;
+  padding: 0px 20px;
+  align-items: center;
+  justify-content: space-between;
+
+  .interactive-block {
+    display: flex;
+    align-items: center;
+  }
+
+  .logo {
+    height: 25px;
+  }
+
+  .page-search {
+    background: url(/static/new-search.png) no-repeat right center;
+    width: 100px;
+    height: 30px;
+    margin: 0px 20px 0px 0px;
+    border-bottom: 1px solid transparent;
+    font-size: 13px;
+    padding-right: 25px;
+    color: $subtitle-text-color;
+    &:focus {
+      outline: none;
+      color: $title-text-color;
+    }
+  }
+
+  .logout {
+    width: 21px;
+    height: 21px;
+  }
+}
+
+@media (max-width: 775px) {
+  .header {
+    .page-search {
+      text-align: right;
+    }
+  }
+}
+
+@media (min-width: 776px) {
+  .header {
+    .page-search {
+      border-bottom: 1px solid $blue;
+      width: 200px;
+    }
+  }
+}

@@ -1,0 +1,38 @@
+.edit-control {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 400px;
+
+  label {
+    width: 100%;
+    margin: 10px 0px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    input, textarea, select {
+      text-align: left;
+      width: 75%;
+    }
+    .block-name-edit {
+      display: flex;
+      justify-content: space-between;
+      width: 75%;
+      select {
+        width: 33%;
+      }
+
+      input {
+        width: 63%;
+      }
+    }
+  }
+}
+
+.edit-actions {
+  width: 75%;
+  margin-top: 30px;
+  display: flex;
+  align-self: flex-end;
+  justify-content: space-between;
+}

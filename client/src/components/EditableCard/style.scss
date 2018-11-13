@@ -1,0 +1,34 @@
+.editable-card-wrapper {
+  position: relative;
+  max-width: 450px;
+  .edit-card-button {
+    border-radius: 5px;
+    padding: 5px;
+    padding: 5px 5px 2px 5px;
+    background-color: rgba(0, 0, 0, 0.5);
+    position: absolute;
+    z-index: 1000;
+    right: 5px;
+    top: 5px;
+    cursor: pointer;
+    display: none;
+    border: 1px solid transparent;
+    .edit-image {
+      width: 25px;
+      height: 25px;
+    }
+
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.7);
+      border: 1px solid white;
+    }
+  }
+}
+
+@media (min-width:1000px) {
+  .editable-card-wrapper {
+    &:hover .edit-card-button {
+      display: inline-block;
+    }
+  }
+}

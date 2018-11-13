@@ -1,0 +1,17 @@
+@import "../../styles/colors";
+
+@media (min-width: 340px) {
+  .modal-dialog {
+    width: 330px;
+    margin-top: 170px;
+  }
+}
+
+.cards-list-without-blocks {
+  width: 100%;
+  justify-content: center;
+  flex-wrap: wrap;
+  .card {
+    margin-bottom: 20px;
+  }
+}

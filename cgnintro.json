@@ -1,0 +1,12 @@
+{
+  "ldapUser": "admin_username",
+  "ldapPass": "admin_password",
+  "ldap": "ldaps://ldaps.cogniance.com:636",
+  "logLevel": "debug",
+  "mongoDB": "mongodb://127.0.0.1/introcogniance",
+  "port": 3000,
+  "additionalAdminLogin": "",
+  "additionalAdminPassword": "",
+  "ca": "/etc/ssl/certs/rootca.crt",
+  "recaptchaSecretKey": "6LezknQUAAAAAN4ZhBFkfbMwoxryvy6163lHgTOm"
+}

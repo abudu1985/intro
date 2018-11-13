@@ -1,0 +1,22 @@
+@import "../../styles/colors";
+
+.cgnintro-input {
+  height: 38px;
+  text-align: center;
+  line-height: 26px;
+  padding: 2px 2px 1px 2px;
+  border-width: 0px 0px 1px 0px;
+  box-sizing: border-box;
+  border-color: rgba(0, 0, 0, 0.12);
+  border-style: solid;
+
+  &::-webkit-input-placeholder,
+  &::-moz-placeholder {
+    color: rgba(0, 0, 0, 0.12);
+  }
+
+  &:focus {
+    outline: none;
+    border-color: $blue;
+  }
+}

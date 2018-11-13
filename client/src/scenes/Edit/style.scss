@@ -1,0 +1,60 @@
+@import '../../styles/colors';
+
+.edit-screen {
+  display: none;
+}
+
+@media (min-width:1000px) {
+  .edit-screen {
+    position: fixed;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 2000;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .edit-menu {
+      display: flex;
+      position: relative;
+      flex-direction: column;
+      justify-content: center;
+      width: 900px;
+      padding: 40px 60px;
+      background-color: #e3e9ed;
+      .edit-main-screen {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .edit-confirmation-screen {
+        position: absolute;
+        display: flex;
+        height: 100%;
+        width: 100%;
+        background-color: rgba(0, 0, 0, 0.3);
+        margin-left: -60px;
+        justify-content: center;
+        align-items: center;
+        .edit-confirmation-menu {
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          padding: 40px 60px;
+          background-color: #e3e9ed;
+          height: 200px;
+          width: 350px;
+
+          .edit-confirmation-control {
+            display: flex;
+            justify-content: space-around;
+          }
+        }
+      }
+    }
+  }
+}

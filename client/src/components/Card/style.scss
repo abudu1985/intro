@@ -1,0 +1,57 @@
+@import '../../styles/colors';
+
+
+.card {
+  &:hover {
+    filter: invert(.01);
+  }
+  min-width: 300px;
+  max-width: 450px;
+  height: 180px;
+  width: 300px;
+  min-height: 180px;
+  max-height: 270px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background-color: $background-white;
+  box-shadow: 0 2px 4px 0 rgba(102, 120, 129, 0.2);
+  .upper {
+    display: flex;
+    height: 100px;
+    justify-content: space-between;
+    align-items: flex-start;
+    .title {
+      width: 150px;
+      margin: 20px 30px 20px 20px;
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 1.33;
+      color: $title-text-color;
+      align-self: flex-start;
+      word-wrap: break-word;
+      overflow: hidden;
+    }
+    .image {
+      height: 100px;
+      width: 100px;
+      img {
+        height: 100%;
+        width: 100%;
+      }
+    }
+  }
+  .bottom {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    height: 80px;
+    background-color: rgba(235, 242, 245, 0.4);
+    padding: 0px 20px;
+    color: $subtitle-text-color;
+    font-size: 13px;
+    line-height: 1.38;
+    word-wrap: break-word;
+    overflow: hidden;
+  }
+}

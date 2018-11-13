@@ -1,0 +1,25 @@
+@import "../../styles/colors";
+
+.cgnintro-roundbutton {
+  background: $blue;
+  color: #fff;
+  height: 38px;
+  padding: 0px 20px;
+  cursor: pointer;
+
+  &.cgnintro-roundbutton-green {
+    background: #1db731;
+  }
+
+  &.cgnintro-roundbutton-red {
+    background: #e94625;
+  }
+
+  &:hover:enabled {
+    filter: brightness(1.1);
+  }
+
+  &:disabled {
+    background: #dbe2e5;
+  }
+}
