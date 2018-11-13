@@ -20,7 +20,7 @@ class SettingsMenu extends React.Component {
 
     render() {
         return (
-            <DropdownMenu userName={reactLocalStorage.get('user')} position='left' triggerType='icon' trigger='glyphicon glyphicon-user'>
+            <DropdownMenu userName={reactLocalStorage.get('user')} position='left' triggerType='text' trigger={reactLocalStorage.get('full_name')}>
                 <MenuItem text="Home" location="/" />
                 { this.props.canEdit ? <MenuItem text="Adminmanager" location="/adminmanager" /> : null }
                 <MenuItem type='separator' />

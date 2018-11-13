@@ -5,7 +5,6 @@ const router = express.Router();
 const Card = require('../models/card');
 const Image = require('../models/image');
 const logger = require('../external/logger');
-const BlockName = require('../models/blockName');
 const Block = require('../models/block');
 
 

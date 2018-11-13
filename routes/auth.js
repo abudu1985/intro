@@ -95,10 +95,15 @@ passport.use(new LocalStrategy({
             return !isDeletedAdmin(el.deletedBy);
         });
 
+        let name = await ldap.getUserName(username);
+
+        logger.debug("TRY SHOW FULL NAME...");
+        logger.debug(name);
+
         if(config.adminLogin === username){ admin = true; }
         if(isDeletedAdmin(validAdmins.find(obj => obj.login === username))){ admin = true; }
 
-      done(null, {token: await tokenStorage.create(admin), admin: admin});
+      done(null, {token: await tokenStorage.create(admin), admin: admin, displayName: name});
     } catch (e) {
       logger.error(e);
       done(e, false);
@@ -109,6 +114,7 @@ passport.use(new LocalStrategy({
 router.post('/login',
   async (req, res, next) => {
     logger.debug("Verifying recaptcha");
+      logger.debug(req.body);
     let captchaValid = false;
     if (req.body.captcha && req.body.captcha !== "") {
       try {
@@ -136,10 +142,12 @@ router.post('/login',
   passport.authenticate('local'),
   (req, res) => {
     logger.debug("Logging in");
+      logger.debug(req);
     let response = {};
     if (req.user) {
       response.admin = req.user.admin;
     }
+    response['displayName'] = req.user.displayName;
     res.json(response);
 });
 
