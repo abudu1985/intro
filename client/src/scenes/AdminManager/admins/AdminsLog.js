@@ -40,10 +40,6 @@ class AdminsLog extends React.Component {
     }
 }
 
-AdminsLog.prototype.propTypes = {
-    admins: PropTypes.array.isRequired
-
-};
 
 const mapStateToProps = (state, original) => {
     return Object.assign({}, original, {

@@ -222,15 +222,14 @@ class BlockCrud extends React.Component {
     }
 }
 
-BlockCrud.prototype.propTypes = {
-    blocks: PropTypes.object.isRequired
-};
+// BlockCrud.propTypes = {
+//     blocks: PropTypes.object.isRequired
+// };
 
 const mapStateToProps = (state, original) => {
     return Object.assign({}, original, {
         cards: state.cards,
-        blocks: state.blocks,
-        errors: state.error.message
+        blocks: state.blocks
     });
 }
 

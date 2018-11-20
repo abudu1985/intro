@@ -21,7 +21,7 @@ const CardsWithoutBlocks = ({onEditInit, canEdit, cards}) => {
             </div>
         </div>
     )
-}
+};
 
 CardsWithoutBlocks.prototype.propTypes = {
     onEditInit: PropTypes.func.isRequired,

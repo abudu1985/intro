@@ -42,8 +42,14 @@ class FooterBlock extends React.Component {
     this.toggleVisible = this.toggleVisible.bind(this);
   }
 
+  componentDidMount() {
+      if (window.innerWidth > 800) {
+          this.setState({visible: true});
+      }
+  }
+
   toggleVisible() {
-    if (window.innerWidth < 1000) {
+    if (window.innerWidth < 800) {
       this.setState({visible: !this.state.visible});
     }
   }
@@ -61,7 +67,6 @@ class FooterBlock extends React.Component {
     )
   }
 }
-
 
 const Footer = (props) => {
   let blocks = [];

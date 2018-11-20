@@ -66,19 +66,12 @@ class CardOrderThematicBlock extends React.Component {
     }
 }
 
-CardOrderThematicBlock.prototype.propTypes = {
-    onEditInit: PropTypes.func.isRequired,
-    canEdit: PropTypes.bool.isRequired,
-    cards: PropTypes.array.isRequired,
-    blockName: PropTypes.array.isRequired
-};
-
 const mapDispatchToProps = (dispatch) => {
     return {
         reorderCards: (items) => {
             dispatch(mixCards(items))
         }
     }
-}
+};
 
 export default connect(null, mapDispatchToProps)(CardOrderThematicBlock);

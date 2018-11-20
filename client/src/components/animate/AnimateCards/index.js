@@ -1,26 +1,27 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import CardOrderThematicBlock from "./CardOrderThematicBlock";
-import {groupByBlocks} from "../../actions/common";
+import AnimateThematicBlock from '../AnimateThematicBlock';
+import style from './style.scss';
+import {groupByBlocks} from "../../../actions/common";
 
-const CardsWithCardOrder = ({onEditInit, canEdit, cards, blockNames}) => {
+
+const AnimateCards = ({onEditInit, canEdit, cards, blockNames}) => {
 
     let innerBlocks = [];
 
     blockNames.forEach((value, i) => {
         innerBlocks.push(
-            <CardOrderThematicBlock
+            <AnimateThematicBlock
                 blockName={value.name}
                 cards={groupByBlocks(cards, value)}
                 key={i}
                 admin={canEdit}
                 onEditInit={onEditInit}
-                blockId={value.id}
                 showBorder={false}/>
         );
     });
-
     return (
         <div className='cards-block'>
             <div className='content-wrapper'>
@@ -32,11 +33,11 @@ const CardsWithCardOrder = ({onEditInit, canEdit, cards, blockNames}) => {
     )
 }
 
-CardsWithCardOrder.prototype.propTypes = {
-    onEditInit: PropTypes.func.isRequired,
-    canEdit: PropTypes.bool.isRequired,
-    cards: PropTypes.array.isRequired,
-    blockNames: PropTypes.array.isRequired
+AnimateCards.prototype.propTypes = {
+  onEditInit: PropTypes.func.isRequired,
+  canEdit: PropTypes.bool.isRequired,
+  cards: PropTypes.array.isRequired,
+  blockNames: PropTypes.array.isRequired
 };
 
-export default CardsWithCardOrder;
+export default AnimateCards;

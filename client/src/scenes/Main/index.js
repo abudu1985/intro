@@ -11,7 +11,8 @@ import AdminBar from '../../components/AdminBar';
 
 import * as editActions from '../../actions/edit';
 import {fetchCards, fetchBlocks} from '../../actions';
-import {getActiveBlocksWithCards} from '../../actions/common'
+import {getActiveBlocksWithFilterableCards} from '../../actions/common'
+import AnimateCards from "../../components/animate/AnimateCards";
 
 
 class Main extends React.Component {
@@ -26,14 +27,14 @@ class Main extends React.Component {
 
     render() {
 
-        let blocks = getActiveBlocksWithCards(this.props.blocks);
+        let blocks = getActiveBlocksWithFilterableCards(this.props.blocks, this.props.cards);
 
         return (
             <div>
                 <Header adminPage={false}/>
                 <QuickLinks/>
                 {this.props.canEdit ? <AdminBar initEditing={this.props.onEditInit}/> : null}
-                <Cards
+                <AnimateCards
                     onEditInit={this.props.onEditInit}
                     canEdit={this.props.canEdit}
                     cards={this.props.cards.filter(c => !c.hidden)}

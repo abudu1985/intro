@@ -7,8 +7,6 @@ import {
     CARDS_DOWNLOADED,
     CARD_REMOVED,
     EDITE_CARD,
-    BLOCK_NAMES_DOWNLOADED,
-    ADD_BLOCK_NAME,
     BLOCKS_DOWNLOADED, DELETE_BLOCK_FAIL
 } from '../actions';
 import { USER_FETCH_INIT, USER_FETCH_DONE, USER_LOGIN_INIT, USER_LOGIN_SUCCESS, USER_LOGIN_FAIL } from '../actions/user';
@@ -44,17 +42,10 @@ export function userInfo(state={logged: false, canEdit: false, errorMessage: '',
   }
 }
 
-export function blockNames(state = [], action) {
-    switch (action.type) {
-        case BLOCK_NAMES_DOWNLOADED:
-            return action.blockNames[0].blockNames;
-        default:
-            return state;
-    }
-}
-
 export function blocks(state = [], action) {
     switch (action.type) {
+        case SEARCH_FILTER:
+            return state;
         case BLOCKS_DOWNLOADED:
             return action.blocks;
         default:
@@ -62,14 +53,6 @@ export function blocks(state = [], action) {
     }
 }
 
-export function error(state={message: ''}, action) {
-    switch(action.type) {
-        case DELETE_BLOCK_FAIL:
-            return Object.assign({}, state, {message: action.message});
-        default:
-            return state;
-    }
-}
 
 const initialState = {
     cards: null,
@@ -77,9 +60,7 @@ const initialState = {
     userInfo: null,
     edit: null,
     admins: null,
-    blockNames: null,
-    blocks: null,
-    error: null
+    blocks: null
 };
 
 export const rootReducer = (state={}, action) => {
@@ -89,8 +70,6 @@ export const rootReducer = (state={}, action) => {
     resultState.userInfo = userInfo(resultState.userInfo, action);
     resultState.edit = edit(resultState.cards, resultState.edit, action);
     resultState.admins = admins(resultState.admins, action);
-    resultState.blockNames = blockNames(resultState.blockNames, action);
     resultState.blocks = blocks(resultState.blocks, action);
-    resultState.error = error(resultState.error, action);
     return resultState;
 };

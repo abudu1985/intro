@@ -1,5 +1,6 @@
-*node_modules/*
+node_modules/*
 .vscode/*
 bundle.js*
 .idea
 npm-debug.log
+client/node_modules

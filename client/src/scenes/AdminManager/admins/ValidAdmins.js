@@ -53,10 +53,6 @@ class ValidAdmins extends React.Component {
     }
 }
 
-ValidAdmins.prototype.propTypes = {
-    admins: PropTypes.array.isRequired
-};
-
 const mapStateToProps = (state, original) => {
     return Object.assign({}, original, {
         admins: state.admins

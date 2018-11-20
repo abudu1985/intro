@@ -70,11 +70,6 @@ class CardsWithBlockOrder extends React.Component {
     }
 }
 
-CardsWithBlockOrder.prototype.propTypes = {
-    onEditInit: PropTypes.func.isRequired,
-    canEdit: PropTypes.bool.isRequired,
-    cards: PropTypes.array.isRequired,
-};
 
 const mapStateToProps = (state, original) => {
     return Object.assign({}, original, {

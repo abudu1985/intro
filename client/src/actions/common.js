@@ -65,7 +65,7 @@ export function cardsOutsideBlock(cards, blockName) {
         };
     });
 
-   freeCards.unshift({ label: '', value: '' });
+    freeCards.unshift({ label: '', value: '' });
 
     return freeCards;
 }
@@ -117,13 +117,13 @@ export function getActiveBlocks(data) {
         active: item.active,
         description: item.description,
         date: item.date
-        })).sort((a, b) => a.order - b.order)
+    })).sort((a, b) => a.order - b.order)
         .filter((bn, index, self) => bn.active > 0);
 
     return blocks;
 }
 
-// for main and card page
+// for card page
 export function getActiveBlocksWithCards(data) {
     let blocks = data.map((item) => ({
         name: item.name,
@@ -135,4 +135,47 @@ export function getActiveBlocksWithCards(data) {
         .filter((bn, index, self) => bn.cards.length !== 0 && bn.active > 0);
 
     return blocks;
+}
+
+// for main page
+export function getActiveBlocksWithFilterableCards(data, cardData) {
+
+    let cardIds = [];
+    let result1 = [];
+
+    let blocks = data.map((item) => ({
+        name: item.name,
+        cards: item.cards,
+        order: item.blockOrder,
+        id: item._id,
+        active: item.active}))
+        .sort((a, b) => a.order - b.order)
+        .filter((bn, index, self) => bn.cards.length !== 0 && bn.active > 0);
+
+    let visibleCards = cardData.filter(function (item) {
+        return !item.hidden
+    });
+
+    // get ids of not hidden cards
+    visibleCards.forEach(function (item, i, arr) {
+        cardIds.push(arr[i].id);
+    });
+
+    cardIds.forEach(function (key) {
+        blocks.forEach(function (b) {
+            let found = false;
+            b.cards.filter(function (i) {
+                if (!found && i.card === key) {
+                    if (!result1.find(o => o.name === b.name)){
+                        result1.push(b);
+                        found = true;
+                        return false;
+                    }
+                } else
+                    return true;
+            })
+        });
+    });
+
+    return result1.sort((a, b) => a.order - b.order);
 }
