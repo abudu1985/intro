@@ -179,3 +179,29 @@ export function getActiveBlocksWithFilterableCards(data, cardData) {
 
     return result1.sort((a, b) => a.order - b.order);
 }
+
+// exclude tags owned by card
+export function tagsOutsideCard(allTags, cardTags) {
+    let tags = [];
+
+    let isDeletedTag = (data) => {
+        if (data) { return true; }
+        return false
+    };
+
+    let validTags = allTags.filter(function(el) {
+        return !isDeletedTag(el.deletedBy);
+    });
+
+    validTags.forEach(function (item, i, arr) {
+        tags.push(arr[i].name);
+    });
+
+    let result = tags.filter(function (item) {
+        return cardTags.indexOf(item) === -1
+    });
+
+    result.unshift('');
+
+    return result;
+}

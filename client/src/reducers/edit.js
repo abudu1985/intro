@@ -1,4 +1,5 @@
 import * as editActions from '../actions/edit';
+import {REMOVE_TAG_FROM_CARD} from "../actions/tags";
 
 
 const defaultState = {
@@ -8,7 +9,8 @@ const defaultState = {
   title: '',
   pic: '',
   url: '',
-  description: ''
+  description: '',
+  tags: []
 };
 
 const edit = (cards, state=defaultState, action) => {
@@ -25,9 +27,13 @@ const edit = (cards, state=defaultState, action) => {
     case editActions.CARD_EDIT_CANCEL:
     case editActions.CARD_EDIT_DELETE:
       return Object.assign({}, defaultState);
+    case editActions.CARD_TAGS_EDIT_CHANGE:
+      return Object.assign({}, state, {tags: [...state.tags, action.value]});
+    case REMOVE_TAG_FROM_CARD:
+      return Object.assign({}, state, {tags: [...state.tags.slice(0, action.index), ...state.tags.slice(action.index+1)]});
     default:
       return state;
   }
-}
+};
 
 export default edit;

@@ -23,9 +23,14 @@ const cards = (state = [], action) => {
         let pattern = '(' + action.text.replace(/[\W]/g,'').split('').join('[\\W]*') + ')';
         let r = new RegExp(pattern, 'gi');
         let hidden = true;
-        if (r.test(card.title) || r.test(card.description) || r.test(card.blockName)) {
+        if (r.test(card.title) || r.test(card.description)) {
           hidden = false;
         }
+        card.tags.forEach(function (item, i, arr) {
+            if (r.test(item)) {
+                hidden = false;
+            }
+        });
         return Object.assign({}, card, {
           hidden: hidden
         });

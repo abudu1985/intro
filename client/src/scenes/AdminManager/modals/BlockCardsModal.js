@@ -1,6 +1,4 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
 import { Button, Modal } from 'react-bootstrap';
 import {getCardsNames, cardsOutsideBlock} from "../../../actions/common";
 import Chkboxlist from "./Chkboxlist";
@@ -28,14 +26,9 @@ class BlockCardsModal extends React.Component{
         }
     }
 
-    blockNameHandler(e) {
-        this.setState({ blockName: e.target.value });
-    }
-
     handleSave() {
         const item = this.state;
         this.props.saveCardsModalDetails(item);
-       // console.log(item);
     }
 
     onChange(name, values) {
@@ -44,7 +37,6 @@ class BlockCardsModal extends React.Component{
 
     onChangeSelect(e) {
         this.setState({ add: e.target.value });
-       // console.log(this.state);
     }
 
 
@@ -54,9 +46,6 @@ class BlockCardsModal extends React.Component{
         let cardsNames = getCardsNames(this.state.cards,this.state.block);
 
         let options = cardsOutsideBlock(this.state.cards,this.state.block);
-
-        // console.log(cardsNames);
-        // console.log(options1);
 
         return (
             <div className="modal-container">
@@ -72,7 +61,6 @@ class BlockCardsModal extends React.Component{
                     <Modal.Body>
                         <form className="form-group">
                             <label>Block name:</label>
-                            {/*<input type='text' className="form-control" value={this.state.block.id} onChange={(e) => this.blockNameHandler(e)} />*/}
                             <h3><b>{this.state.block.name}</b></h3>
                             { this.state.block.cards.length !== 0 ?
                             <div className="list-group">

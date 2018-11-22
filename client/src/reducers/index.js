@@ -2,6 +2,7 @@ import { combineReducers } from 'redux';
 import edit from './edit';
 import cards from './cards';
 import admins from './admins';
+import tags from './tags';
 import {
     SEARCH_FILTER,
     CARDS_DOWNLOADED,
@@ -60,7 +61,8 @@ const initialState = {
     userInfo: null,
     edit: null,
     admins: null,
-    blocks: null
+    blocks: null,
+    tags: null
 };
 
 export const rootReducer = (state={}, action) => {
@@ -71,5 +73,6 @@ export const rootReducer = (state={}, action) => {
     resultState.edit = edit(resultState.cards, resultState.edit, action);
     resultState.admins = admins(resultState.admins, action);
     resultState.blocks = blocks(resultState.blocks, action);
+    resultState.tags = tags(resultState.tags, action);
     return resultState;
 };

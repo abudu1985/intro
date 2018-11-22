@@ -5,9 +5,9 @@ import Card from '../../components/Card';
 import EditControl from '../../components/EditControl';
 import RoundButton from '../../components/RoundButton';
 import * as editActions from '../../actions/edit';
-
+import CardTagsList from '../../components/CardTagsList';
+import { tagsOutsideCard } from '../../actions/common';
 import style from './style.scss';
-
 
 class Edit extends React.Component {
   constructor(props) {
@@ -25,6 +25,12 @@ class Edit extends React.Component {
       this.props.onEditChange(value, event.target.value);
     }).bind(this);
   }
+
+    tagsChangeHandler(value) {
+        return (event => {
+            this.props.onTagsChange(event.target.value);
+        }).bind(this);
+    }
 
   imageChangeHandler(event) {
     let reader = new FileReader();
@@ -47,20 +53,24 @@ class Edit extends React.Component {
                       this.setState({allow: true});
                   }
               });
-
           });
   }
-
   render() {
 
-    let blockNames = this.props.blocks.map(item => item.name);
+    let tagNames = tagsOutsideCard(this.props.tags, this.props.cardInfo.tags);
 
     return (
       <div className="edit-screen">
         <div className="edit-menu">
+          {/*show tags here*/}
+            {this.props.cardInfo.id !== null ?
+                this.props.cardInfo.tags.length !== 0 ?
+                    <b>Tags: </b> : <b>No Tags yet. </b>
+             : ''
+            }
+          <CardTagsList />
           <div className="edit-main-screen">
             <div className="edit-preview">
-              <h2> {this.props.cardInfo.blockName}</h2>
               <Card 
                 title={this.props.cardInfo.title}
                 pic={this.props.cardInfo.pic}
@@ -68,12 +78,13 @@ class Edit extends React.Component {
             </div>
             <EditControl
               {...this.props.cardInfo}
-              blockNameOptions={blockNames}
+              tagNameOptions={tagNames}
               onTitleChange={this.valueChangeHandler('title')}
               onUrlChange={this.valueChangeHandler('url')}
               onDescriptionChange={this.valueChangeHandler('description')}
               onImageChange={this.imageChangeHandler}
               onBlockNameChange={this.valueChangeHandler('blockName')}
+              onTagsChange={this.tagsChangeHandler('tags')}
               onCancel={this.props.cancelEditing}
               onApply={this.applyEditResults}
               onDelete={this.props.cardInfo.id ? () => {this.setState({showConfirmation: true}); this.tryDeleteCard(this.props.cardInfo.id)} : null}/>
@@ -110,7 +121,8 @@ const mapStateToProps = (state, original) => {
     cards: state.cards,
     cardInfo: state.edit,
     canEdit: state.userInfo.canEdit,
-    blocks: state.blocks
+    blocks: state.blocks,
+    tags: state.tags
   });
 }
 
@@ -134,6 +146,10 @@ const mapDispatchToProps = (dispatch) => {
 
     sendEdit: (cardInfo) => {
       dispatch(editActions.pushUpdate());
+    },
+
+    onTagsChange: (value) => {
+        dispatch(editActions.cardTagsEditChange(value));
     }
   }
 }

@@ -78,13 +78,10 @@ class BlockCrud extends React.Component {
         if(bool){
             this.props.onDeleteClick(this.props.blocks[this.state.requiredItem]);
         }
-        console.log(this.state.requiredItem);
         this.setState({ show: false, deleteModal: false});
     }
 
     replaceModalItem(item) {
-
-        console.log(item);
 
         this.setState({
             requiredItem: item

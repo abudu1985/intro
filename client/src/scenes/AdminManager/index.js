@@ -14,6 +14,8 @@ import BlockOrder from "./BlockOrder";
 import {fetchCards, fetchBlocks} from '../../actions';
 import BlockCrud from "./BlockCrud";
 import CardOrder from "./CardOrder";
+import Tags from "./tags/Tags";
+import {fetchTags} from "../../actions/tags";
 
 
 class AdminManager extends Component {
@@ -26,7 +28,7 @@ class AdminManager extends Component {
 
     componentWillMount() {
         this.props.updateAdminsList();
-        //this.props.getBlocks();
+        this.props.updateTagsList();
     }
 
     onAddAdmin() {
@@ -55,6 +57,7 @@ class AdminManager extends Component {
                         <Nav>
                             <div>Blocks</div>
                             <div>Cards</div>
+                            <div>Tags</div>
                             <div>Order blocks</div>
                             <div>Order cards</div>
                             <div>Admins</div>
@@ -67,6 +70,10 @@ class AdminManager extends Component {
                         {/* create read update delete cards */}
                             <div>
                                 <CardCrud />
+                            </div>
+                        {/* create tags */}
+                            <div>
+                                <Tags />
                             </div>
                         {/* cards block order */}
                             <div>
@@ -109,7 +116,8 @@ class AdminManager extends Component {
 }
 
 AdminManager.propTypes = {
-    updateAdminsList: PropTypes.func.isRequired
+    updateAdminsList: PropTypes.func.isRequired,
+    updateTagsList: PropTypes.func.isRequired
 };
 
 const mapStateToProps = (state, original) => {
@@ -133,7 +141,11 @@ const mapDispatchToProps = (dispatch) => {
 
         getBlocks: () => {
             dispatch(fetchBlocks());
-        }
+        },
+
+        updateTagsList: () => {
+            dispatch(fetchTags());
+        },
     }
 }
 

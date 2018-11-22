@@ -50,14 +50,6 @@ export function fetchCards() {
   }
 }
 
-export function fetchBlockNames() {
-    return function (dispatch) {
-        return fetch('/api/cards/block_names', {credentials: 'include'})
-            .then(response => response.json())
-            .then(json => dispatch(blockNamesDownloaded(json)));
-    }
-}
-
 export function fetchBlocks() {
     return function (dispatch) {
         return fetch('/api/cards/blocks', {credentials: 'include'})

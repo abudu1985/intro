@@ -12,7 +12,9 @@ import style from './style.scss';
 class EditControl extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {selectValue: this.props.blockName || 'createnew'};
+    this.state = {
+      selectValue: ''
+    };
     this.handleSelect = this.handleSelect.bind(this);
     this.handleInput = this.handleInput.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -20,13 +22,15 @@ class EditControl extends React.Component {
 
   handleSelect(event) {
     this.setState({selectValue: event.target.value});
-    let customEvent = new Event('input', {bubbles: true});
-    if (event.target.value !== 'createnew') {
-      this.blockInput.value = event.target.value;
-    } else {
-      this.blockInput.value = '';
-    }
-    this.props.onBlockNameChange({target: {value: event.target.value !== 'createnew' ? event.target.value : ''}});
+    this.props.onTagsChange({target: {value: event.target.value}});
+
+    // let customEvent = new Event('input', {bubbles: true});
+    // if (event.target.value !== 'createnew') {
+    //   this.tagInput.value = event.target.value;
+    // } else {
+    //   this.tagInput.value = '';
+    // }
+    // this.props.onBlockNameChange({target: {value: event.target.value !== 'createnew' ? event.target.value : ''}});
   }
 
   handleInput(event) {
@@ -39,29 +43,23 @@ class EditControl extends React.Component {
   }
 
   render() {
-    let options = this.props.blockNameOptions.map(c => <option key={c}>{c}</option>);
+    let options = this.props.tagNameOptions.map(c => <option key={c}>{c}</option>);
+
     return (
       <form className="edit-control" onSubmit={this.handleSubmit}>
-        {/*<label>Block Name:*/}
-          {/*<div className='block-name-edit'>*/}
-            {/*<Select defaultValue={this.state.selectValue} onChange={this.handleSelect}>*/}
-              {/*/!*<option value='createnew'>Create New</option>*!/*/}
-              {/*{options}*/}
-            {/*</Select>*/}
-            {/*<input*/}
-              {/*type='text'*/}
-              {/*placeholder='Block Name'*/}
-              {/*disabled={(this.state.selectValue !== 'createnew') ? 'disabled' : ''}*/}
-              {/*defaultValue={this.props.blockName || ''}*/}
-              {/*onChange={this.handleInput}*/}
-              {/*required*/}
-              {/*ref={el => {this.blockInput = el;}} />*/}
-          {/*</div>*/}
-        {/*</label>*/}
         <label>Title: <Input type='text' defaultValue={this.props.title || ''} onChange={this.props.onTitleChange} required/></label>
         <label>URL: <Input type='url' defaultValue={this.props.url || ''} onChange={this.props.onUrlChange} required/></label>
         <label>Image: <Input type='file' accept='.svg,.png' onChange={this.props.onImageChange} required={this.props.onDelete ? false : true}/></label>
         <label>Description: <TextArea rows='3' defaultValue={this.props.description || ''} onChange={this.props.onDescriptionChange} required/></label>
+          {this.props.onDelete ?
+              <label>Add Tag:
+                  <div className='block-name-edit'>
+                      <Select defaultValue={this.state.selectValue} onChange={this.handleSelect}>
+                          {options}
+                      </Select>
+                  </div>
+              </label>
+              : null}
         <div className="edit-actions">
           <RoundButton innerHtml='Cancel' onClick={this.props.onCancel}/>
           <RoundButton type='submit' innerHtml='Apply' color='green'/>
@@ -77,13 +75,15 @@ EditControl.propTypes = {
   url: PropTypes.string,
   description: PropTypes.string,
   blockName: PropTypes.string,
-  blockNameOptions: PropTypes.arrayOf(PropTypes.string),
+  tagNameOptions: PropTypes.arrayOf(PropTypes.string),
+  tags: PropTypes.arrayOf(PropTypes.string),
 
   onTitleChange: PropTypes.func.isRequired,
   onUrlChange: PropTypes.func.isRequired,
   onDescriptionChange: PropTypes.func.isRequired,
   onImageChange: PropTypes.func.isRequired,
-  onBlockNameChange: PropTypes.func.isRequired
+  onBlockNameChange: PropTypes.func.isRequired,
+  onTagsChange: PropTypes.func.isRequired
 };
 
 export default EditControl;
