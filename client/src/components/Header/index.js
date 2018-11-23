@@ -18,6 +18,9 @@ const mapDispatchToProps = (dispatch) => {
   return {
     onChange: (event) => {
       dispatch(searchFilter(event.target.value))
+    },
+    cancelSearch: (val) => {
+        dispatch(searchFilter(val))
     }
   }
 }
@@ -25,8 +28,12 @@ const mapDispatchToProps = (dispatch) => {
 class RawHeader extends React.Component{
   constructor(props) {
     super(props);
-    this.onChange = props.onChange;
     this.adminPage = props.adminPage;
+    this.state = {
+        touch: false
+    };
+    this.onStartChange = this.onStartChange.bind(this);
+    this.onClearClick = this.onClearClick.bind(this);
   }
 
   componentDidMount(){
@@ -35,12 +42,43 @@ class RawHeader extends React.Component{
     }
   }
 
+  onStartChange(event) {
+    console.log(event.target.value);
+    if(event.target.value !== ""){
+        this.setState({ touch: true});
+    } else {
+        this.setState({ touch: false});
+    }
+
+    this.props.onChange(event);
+  }
+
+  onClearClick() {
+    this.searchInput.value = '';
+    this.setState({ touch: false});
+    this.props.cancelSearch(this.searchInput.value);
+    console.log('hello clear');
+  }
+
   render() {
     return (
       <header className='header'>
         <Logo />
         <div className='interactive-block'>
-            { !this.props.adminPage ? <input className='page-search' onChange={this.onChange} ref={(input) => { this.searchInput = input; }} /> : null }
+            { !this.props.adminPage ?
+                <input className={!this.state.touch ? 'page-search' : 'page-search-delete'} onChange={this.onStartChange} ref={(input) => { this.searchInput = input; }} />
+                : null
+            }
+
+            {this.state.touch ?
+            <button
+                type="button"
+                onClick={() => this.onClearClick()}
+                className="search-close-icon"
+            >X</button>
+                : null
+            }
+
             <SettingsMenu/>
             {/*<a href='/api/auth/logout'><img className='logout' src='static/logout.svg'/></a>*/}
         </div>
