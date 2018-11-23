@@ -2,6 +2,7 @@ import React from 'react';
 import { DropdownMenu, MenuItem } from 'react-bootstrap-dropdown-menu';
 import { connect } from 'react-redux';
 import {reactLocalStorage} from "reactjs-localstorage";
+import style from './style.scss';
 
 class SettingsMenu extends React.Component {
     constructor() {
