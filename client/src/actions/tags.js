@@ -1,4 +1,5 @@
 import {DELETE_BLOCK_FAIL} from "./index";
+import {addLog} from '../actions';
 
 export const ADD_TAG_INIT = 'ADD_TAG_INIT';
 export const ADD_TAG_SUCCESS = 'ADD_TAG_SUCCESS';
@@ -62,6 +63,7 @@ export const addTag = (data) => {
                     dispatch(tagAddFail());
                 } else {
                     dispatch(tagAddSuccess(data));
+                    dispatch(addLog("Tag", data.addedBy, "ADD", data.id, data.name));
                 }
             });
     }

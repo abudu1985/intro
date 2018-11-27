@@ -28,17 +28,19 @@ export function groupByBlocks(cards, blockName) {
 // all cards related to block by order
     cardIds.forEach(function(key) {
         let found = false;
-        result.filter(function(i) {
-            if(!found && i.id === key) {
-                result1.push(i);
-                found = true;
-                return false;
-            } else
-                return true;
-        })
+        if(result.length !== 0) {
+            result.filter(function (i) {
+                if (!found && i.id === key) {
+                    result1.push(i);
+                    found = true;
+                    return false;
+                } else
+                    return true;
+            });
+        }
     });
 
-    return result1;
+    return result1.length > 0 ? result1 : [];
 }
 
 
@@ -125,6 +127,9 @@ export function getActiveBlocks(data) {
 
 // for card page
 export function getActiveBlocksWithCards(data) {
+
+    let withActiveCards = [];
+
     let blocks = data.map((item) => ({
         name: item.name,
         cards: item.cards,
@@ -134,7 +139,20 @@ export function getActiveBlocksWithCards(data) {
         .sort((a, b) => a.order - b.order)
         .filter((bn, index, self) => bn.cards.length !== 0 && bn.active > 0);
 
-    return blocks;
+    // check that cards inside all active
+    blocks.forEach(function (b) {
+        let found = false;
+        b.cards.filter(function (i) {
+            if (!found && i.active > 0) {
+                withActiveCards.push(b);
+                found = true;
+                return false;
+            } else
+                return true;
+        })
+    });
+
+    return withActiveCards;
 }
 
 // for main page
@@ -142,6 +160,7 @@ export function getActiveBlocksWithFilterableCards(data, cardData) {
 
     let cardIds = [];
     let result1 = [];
+    let withActiveCards = [];
 
     let blocks = data.map((item) => ({
         name: item.name,
@@ -151,6 +170,19 @@ export function getActiveBlocksWithFilterableCards(data, cardData) {
         active: item.active}))
         .sort((a, b) => a.order - b.order)
         .filter((bn, index, self) => bn.cards.length !== 0 && bn.active > 0);
+
+    // check that cards inside all active
+    blocks.forEach(function (b) {
+        let found = false;
+        b.cards.filter(function (i) {
+            if (!found && i.active > 0) {
+                withActiveCards.push(b);
+                    found = true;
+                    return false;
+            } else
+                return true;
+        })
+    });
 
     let visibleCards = cardData.filter(function (item) {
         return !item.hidden
@@ -160,12 +192,11 @@ export function getActiveBlocksWithFilterableCards(data, cardData) {
     visibleCards.forEach(function (item, i, arr) {
         cardIds.push(arr[i].id);
     });
-
     cardIds.forEach(function (key) {
-        blocks.forEach(function (b) {
+        withActiveCards.forEach(function (b) {
             let found = false;
             b.cards.filter(function (i) {
-                if (!found && i.card === key) {
+                if (!found && i.card === key && i.active > 0) {
                     if (!result1.find(o => o.name === b.name)){
                         result1.push(b);
                         found = true;
@@ -176,7 +207,6 @@ export function getActiveBlocksWithFilterableCards(data, cardData) {
             })
         });
     });
-
     return result1.sort((a, b) => a.order - b.order);
 }
 
@@ -204,4 +234,20 @@ export function tagsOutsideCard(allTags, cardTags) {
     result.unshift('');
 
     return result;
+}
+
+export function getNameOfAdded(item, id) {
+
+        let result1 = [];
+            let found = false;
+            item.cards.filter(function(i) {
+                if(!found && i.id === id) {
+                    result1.push(i.title);
+                    found = true;
+                    return false;
+                } else
+                    return true;
+            });
+        return result1[0];
+
 }

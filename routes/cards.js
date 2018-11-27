@@ -9,41 +9,39 @@ const Block = require('../models/block');
 
 
 const getCardContentFromBody = body => {
-    let result = {};
-    if (body.title) result.title = body.title;
-    if (body.description) result.description = body.description;
-    if (body.url) result.url = body.url;
-    if (body.pic) result.pic = body.pic;
-    if (body.tags) result.tags = body.tags;
-    return result;
-}
-
+  let result = {};
+  if (body.title) result.title = body.title;
+  if (body.description) result.description = body.description;
+  if (body.url) result.url = body.url;
+  if (body.pic) result.pic = body.pic;
+  if (body.tags) result.tags = body.tags;
+  return result;
+};
 
 router.get('/', async (req, res) => {
-    if (!req.user) {
-        logger.debug("Unauthorized. Cards get")
-        res.status(401).json({status: 401});
-        return;
-    }
+  if (!req.user) {
+    logger.debug("Unauthorized. Cards get")
+    res.status(401).json({status: 401});
+    return;
+  }
 
-    try {
-        let cards = await Card.find().sort({counter: -1});
-        let result = [];
-        for (let card of cards) {
-            await card.updateHistory();
-            result.push(Object.assign({}, card.getJson(), {
-                url: (req.user.admin ? card.url : '/url/' + card._id),
-                pic: (card.pic ? '/image/' + card.pic : '')
-            }));
-        }
-        logger.debug("Sending cards list");
-        res.json(result);
-    } catch (err) {
-        logger.error("Error occured on obtaining cards: " + err);
-        res.status(500).json({status: 500});
+  try {
+    let cards = await Card.find().sort({counter: -1});
+    let result = [];
+    for (let card of cards) {
+      await card.updateHistory();
+      result.push(Object.assign({}, card.getJson(), {
+        url: (req.user.admin ? card.url : '/url/' + card._id),
+        pic: (card.pic ? '/image/' + card.pic : '')
+      }));
     }
+    logger.debug("Sending cards list");
+    res.json(result);
+  } catch (err) {
+    logger.error("Error occured on obtaining cards: " + err);
+    res.status(500).json({status: 500});
+  }
 });
-
 
 router.post('/', async (req, res) => {
     if (!req.user || !req.user.admin) {
@@ -74,7 +72,6 @@ router.post('/', async (req, res) => {
     }
 });
 
-
 router.get('/blocks', async (req, res) => {
     if (!req.user) {
         logger.debug("Unauthorized. Cards get")
@@ -95,25 +92,25 @@ router.get('/blocks', async (req, res) => {
 });
 
 router.delete('/:cardid', async (req, res) => {
-    if (!req.user || !req.user.admin) {
-        logger.error(req.user);
-        res.status(401).json({status: 401});
-        return;
-    }
+  if (!req.user || !req.user.admin) {
+    logger.error(req.user);
+    res.status(401).json({status: 401});
+    return;
+  }
 
-    try {
-        let result = await Card.findByIdAndRemove(req.params.cardid);
-        logger.debug("Removed card. ID: " + result._id);
-        if (result.pic) {
-            result = await Image.findByIdAndRemove(result.pic);
-            logger.debug("Removed picture. ID: " + result._id);
-        }
-        res.json({status: 200});
-    } catch (err) {
-        logger.error("Failed to delet card");
-        logger.error(err);
-        res.status(500).json({status: 500});
+  try {
+    let result = await Card.findByIdAndRemove(req.params.cardid);
+    logger.debug("Removed card. ID: " + result._id);
+    if (result.pic) {
+      result = await Image.findByIdAndRemove(result.pic);
+      logger.debug("Removed picture. ID: " + result._id);
     }
+    res.json({status: 200});
+  } catch (err) {
+    logger.error("Failed to delet card");
+    logger.error(err);
+    res.status(500).json({status: 500});
+  }
 });
 
 
@@ -186,7 +183,6 @@ router.post('/cards_reorder', async (req, res) => {
                 res.json({message: error});
             } else {
                 logger.debug('INITIATOR REORDER CARD UPDATE');
-                logger.debug(blocks);
             }
         });
 
@@ -198,40 +194,39 @@ router.post('/cards_reorder', async (req, res) => {
                 res.json({message: error});
             } else {
                 logger.debug('POSITION REORDER CARD UPDATE');
-                logger.debug(blocks);
             }
         });
-    res.json({status: 200});
+     res.json({status: 200});
 });
 
 router.post('/:cardid', async (req, res) => {
-    if (!req.user || !req.user.admin) {
-        logger.error("Unauthorized. Card update");
-        res.status(401).json({status: 401});
-        return;
-    }
+  if (!req.user || !req.user.admin) {
+    logger.error("Unauthorized. Card update");
+    res.status(401).json({status: 401});
+    return;
+  }
 
-    let cardContent = getCardContentFromBody(req.body);
-    if (cardContent.pic) {
-        try {
-            let pictureID = await Image.createImage(cardContent.pic);
-            cardContent.pic = pictureID;
-        } catch (err) {
-            logger.error("Failed to process image. Just remove it");
-            logger.error(err);
-            delete cardContent.pic;
-        }
-    }
-
+  let cardContent = getCardContentFromBody(req.body);
+  if (cardContent.pic) {
     try {
-        let result = await Card.findByIdAndUpdate(req.params.cardid, cardContent);
-        logger.debug("Updated card. ID: " + result._id);
-        res.json({status: 200});
+      let pictureID = await Image.createImage(cardContent.pic);
+      cardContent.pic = pictureID;
     } catch (err) {
-        logger.error("Failed to update card info.");
-        logger.error(err);
-        res.status(500).json({status: 500});
+      logger.error("Failed to process image. Just remove it");
+      logger.error(err);
+      delete cardContent.pic;
     }
+  }
+
+  try {
+    let result = await Card.findByIdAndUpdate(req.params.cardid, cardContent);
+    logger.debug("Updated card. ID: " + result._id);
+    res.json({status: 200});
+  } catch (err) {
+    logger.error("Failed to update card info.");
+    logger.error(err);
+    res.status(201).json({status: 201, message: err});
+  }
 });
 
 module.exports = router;

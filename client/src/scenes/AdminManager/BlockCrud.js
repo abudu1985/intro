@@ -6,13 +6,14 @@ import {
     blockDeleteFail,
     deleteBlock,
     updateBlock,
-    updateBlockCards
+    updateBlockCards,
+    addLog
 } from "../../actions";
 import BlockUpdateModal from "./modals/BlockUpdateModal";
 import { Button, Modal } from 'react-bootstrap';
 import BlockDeleteConfirm from "./modals/BlockDeleteConfirm";
 import BlockCardsModal from "./modals/BlockCardsModal";
-import {getIdsForDeleted, getActiveBlocks} from "../../actions/common";
+import {getIdsForDeleted, getActiveBlocks, getNameOfAdded} from "../../actions/common";
 import {reactLocalStorage} from 'reactjs-localstorage';
 import Moment from "moment";
 
@@ -64,13 +65,21 @@ class BlockCrud extends React.Component {
     saveCardsModalDetails(item) {
 
        let deletedCards = getIdsForDeleted(item);
+       console.log(deletedCards);
+
+       let added = getNameOfAdded(item, item.add);
+       let deleted = item.delete ? Object.keys(item.delete) : "";
+       let name = item.block.name;
+
         const data = {
             blockId: item.block.id,
-            deletedCardsId: deletedCards ? deletedCards : "",
-            addCard: item.add
+            deletedCardsId: deletedCards,
+            addCard: item.add,
+            info: added ? "add: " + added : "" +  deleted ? ", deleted: " + deleted : "",
+            name: name
         };
 
-        this.props.updateBlockCards( data);
+        this.props.updateBlockCards(data);
         this.setState({ show: false});
     }
 
@@ -116,7 +125,7 @@ class BlockCrud extends React.Component {
         }
     }
 
-    tryDeleteBlock(id) {
+    tryDeleteBlock(id, name) {
         fetch('/api/blocks/' + id, {method: 'DELETE', credentials: 'include'})
             .then(response => {
                 response.json().then((data) => {
@@ -127,6 +136,7 @@ class BlockCrud extends React.Component {
                     } else {
                         console.log(data);
                         this.props.updateBlock();
+                        this.props.writeLog("Block", reactLocalStorage.get('user'), "DELETE", Date.now().toString(), name);
                     }
                 });
 
@@ -203,7 +213,7 @@ class BlockCrud extends React.Component {
                                     </Button>
                                     &nbsp;	&nbsp;
                                     <button
-                                        onClick={() => { this.tryDeleteBlock(item.id); this.replaceModalItem(item)}}
+                                        onClick={() => { this.tryDeleteBlock(item.id, item.name); this.replaceModalItem(item)}}
                                         type="button" className="btn btn-danger btn-xs"
                                     >DELETE</button>
                                 </td>
@@ -232,7 +242,7 @@ const mapDispatchToProps = (dispatch) => {
             dispatch(addBlock(data));
         },
 
-        onDeleteClick: (item) => {
+        onDeleteClick: (item, ) => {
             dispatch(deleteBlock(item))
         },
 
@@ -246,6 +256,10 @@ const mapDispatchToProps = (dispatch) => {
 
         blockDeleteFail : () => {
             dispatch(blockDeleteFail())
+        },
+
+        writeLog : (entity, initiator, action, date, info) => {
+            dispatch(addLog(entity, initiator, action, date, info))
         }
     }
 }

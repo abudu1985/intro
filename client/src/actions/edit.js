@@ -1,4 +1,5 @@
-import {fetchCards} from '../actions';
+import {fetchCards, addLog} from '../actions';
+import {reactLocalStorage} from "reactjs-localstorage";
 
 export const CARD_EDIT_INIT = 'CARD_EDIT_INIT';
 export const CARD_EDIT_CANCEL = 'CARD_EDIT_CANCEL';
@@ -79,8 +80,14 @@ export const pushUpdate = () => {
       })
       .then(response => response.json())
       .then(json => {
+          console.log(result);
         dispatch(cardEditApply());
         dispatch(fetchCards());
+        let info = " title: " + result.title + ", url: " + result.url + ", description: " + result.description + ", tags[" + result.tags.join() + "]";
+        dispatch(addLog("Card", reactLocalStorage.get('user'),
+            edit.id ? "UPDATE" : "ADD",
+            Date.now().toString(), info
+        ));
       });
   }
 };

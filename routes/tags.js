@@ -13,9 +13,8 @@ const getTagContentFromBody = body => {
     if (body.addedBy) result.addedBy = body.addedBy;
     if (body.deletedBy) result.deletedBy = body.deletedBy;
     return result;
-}
+};
 
-// add new tag
 router.post('/add', async (req, res) => {
     if (!req.user || !req.user.admin) {
         logger.error("Unauthorized. Card push");
@@ -35,7 +34,6 @@ router.post('/add', async (req, res) => {
     }
 });
 
-// get all tags
 router.get('/', async (req, res) => {
     if (!req.user) {
         logger.debug("Unauthorized. TAGS GET");
@@ -56,15 +54,12 @@ router.get('/', async (req, res) => {
     });
 });
 
-// make tag deleted by someone
 router.delete('/:tagid/by/:initiator', async (req, res) => {
     if (!req.user || !req.user.admin) {
         logger.error(req.user);
         res.status(401).json({status: 401});
         return;
     }
-
-    logger.debug("HERE TRY TO FIND TAG");
 
     try {
         const tagid = req.params.tagid;
@@ -81,8 +76,6 @@ router.delete('/:tagid/by/:initiator', async (req, res) => {
     }
 });
 
-
-// delete tag
 router.delete('/:id', async (req, res) => {
     if (!req.user || !req.user.admin) {
         logger.error(req.user);

@@ -39,7 +39,7 @@ class ValidAdmins extends React.Component {
                                 </td>
                                 <td className="col-2">
                                     <button
-                                        onClick={this.props.onDeleteClick.bind(this, item.id)}
+                                        onClick={this.props.onDeleteClick.bind(this, item.id, item.login)}
                                         type="button" className="btn btn-danger btn-xs"
                                     >DELETE</button>
                                 </td>
@@ -57,14 +57,14 @@ const mapStateToProps = (state, original) => {
     return Object.assign({}, original, {
         admins: state.admins
     });
-}
+};
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        onDeleteClick: (id) => {
-            dispatch(deleteAdmin(id, reactLocalStorage.get('user')))
+        onDeleteClick: (id, login) => {
+            dispatch(deleteAdmin(id, reactLocalStorage.get('user'), login))
         }
     }
-}
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(ValidAdmins);

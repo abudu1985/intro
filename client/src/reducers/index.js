@@ -2,13 +2,13 @@ import { combineReducers } from 'redux';
 import edit from './edit';
 import cards from './cards';
 import admins from './admins';
-import tags from './tags';
+import tags, {ADD_TAG_SUCCESS} from './tags';
 import {
     SEARCH_FILTER,
     CARDS_DOWNLOADED,
     CARD_REMOVED,
     EDITE_CARD,
-    BLOCKS_DOWNLOADED, DELETE_BLOCK_FAIL
+    BLOCKS_DOWNLOADED, LOGS_ADD_SUCCESS, LOGS_DOWNLOADED
 } from '../actions';
 import { USER_FETCH_INIT, USER_FETCH_DONE, USER_LOGIN_INIT, USER_LOGIN_SUCCESS, USER_LOGIN_FAIL } from '../actions/user';
 
@@ -54,6 +54,19 @@ export function blocks(state = [], action) {
     }
 }
 
+export function logs(state = [], action) {
+    switch (action.type) {
+        case LOGS_ADD_SUCCESS:
+            return [...state, action.data];
+        case LOGS_DOWNLOADED:
+            return action.logs;
+        default:
+            return state;
+    }
+}
+
+
+
 
 const initialState = {
     cards: null,
@@ -62,7 +75,8 @@ const initialState = {
     edit: null,
     admins: null,
     blocks: null,
-    tags: null
+    tags: null,
+    logs: null
 };
 
 export const rootReducer = (state={}, action) => {
@@ -74,5 +88,6 @@ export const rootReducer = (state={}, action) => {
     resultState.admins = admins(resultState.admins, action);
     resultState.blocks = blocks(resultState.blocks, action);
     resultState.tags = tags(resultState.tags, action);
+    resultState.logs = logs(resultState.logs, action);
     return resultState;
 };

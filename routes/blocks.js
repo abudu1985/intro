@@ -4,8 +4,6 @@ const router = express.Router();
 const logger = require('../external/logger');
 const Block = require('../models/block');
 
-
-
 const getBlockContentFromBody = body => {
     let result = {};
     if (body.name) result.name = body.name;
@@ -15,7 +13,6 @@ const getBlockContentFromBody = body => {
     return result;
 }
 
-// add new block name
 router.post('/add', async (req, res) => {
     if (!req.user || !req.user.admin) {
         logger.error("Unauthorized. Card push");
@@ -37,16 +34,12 @@ router.post('/add', async (req, res) => {
     }
 });
 
-
-// delete block
 router.delete('/:id', async (req, res) => {
     if (!req.user || !req.user.admin) {
         logger.error(req.user);
         res.status(401).json({status: 401});
         return;
     }
-
-    logger.debug('START FIND BLOCK TO DEACTIVATE');
 
     Block.findOne({_id: req.params.id})
         .then(block => {
@@ -66,17 +59,12 @@ router.delete('/:id', async (req, res) => {
         });
 });
 
-
-// update block cards will receive (req.body.blockId, req.body.deletedCardsId, req.body.addCard)
 router.post('/update_cards', async (req, res) => {
     if (!req.user || !req.user.admin) {
         logger.error("Unauthorized. Card push");
         res.status(401).json({status: 401});
         return;
     }
-
-    logger.debug('START FIND BLOCK TO UPDATE CARDS');
-    logger.debug(req.body);
 
     if (req.body.addCard && req.body.addCard !== "") {
         Block.findOne({_id: req.body.blockId})
@@ -95,39 +83,37 @@ router.post('/update_cards', async (req, res) => {
             })
             .catch(err => {
                 logger.error(err);
-                res.status(500).json({status: 500})
+                res.status(201).json({status: 201, message: err})
             });
     }
 
     if (req.body.deletedCardsId && req.body.deletedCardsId !== "") {
 
-        Block.update({_id: req.body.blockId, "cards.card": { $in: req.body.deletedCardsId }},
-            {$set: {"cards.$.active": 0}}, { multi: true }, function (error, blocks) {
-                if (error) {
-                    logger.error('UPDATE BLOCK CARDS STATUS ERROR');
-                    logger.error(error);
-                    //res.json({message: error});
-                } else {
-                    logger.debug('POSITION REORDER CARD UPDATE');
-                    logger.debug(blocks);
-                }
-            });
+        req.body.deletedCardsId.forEach(function (id, index, arr) {
+            Block.update({_id: req.body.blockId, "cards.card": {$in: [id]}},
+                {$set: {"cards.$.active": 0}}, {multi: true}, function (error, blocks) {
+                    if (error) {
+                        logger.error('UPDATE BLOCK CARDS STATUS ERROR');
+                        logger.error(error);
+                        res.status(201).json({status: 201, message: error})
+                    } else {
+                        logger.debug('POSITION REORDER CARD UPDATE');
+                        logger.debug(blocks);
+                    }
+                });
+        });
     }
-
-    res.status(200).json({status: 200})
+    setTimeout(() => {
+        res.status(200).json({status: 200})
+    }, 600)
 });
 
-
-// update block will receive (req.body.newName, req.body.newDescription)
 router.post('/update/:index', async (req, res) => {
     if (!req.user || !req.user.admin) {
         logger.error("Unauthorized. Card push");
         res.status(401).json({status: 401});
         return;
     }
-
-    logger.debug('START FIND BLOCK TO UPDATE');
-    logger.debug(req.body);
 
     Block.findByIdAndUpdate(req.params.index, { $set: { name: req.body.newName, description: req.body.newDescription }}, {}, function (error, thank) {
         if (error) {
@@ -140,6 +126,5 @@ router.post('/update/:index', async (req, res) => {
         }
     });
 });
-
 
 module.exports = router;

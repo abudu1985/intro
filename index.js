@@ -16,6 +16,7 @@ const url = require('./routes/url');
 const admins = require('./routes/admins');
 const blocks = require('./routes/blocks');
 const tags = require('./routes/tags');
+const logs = require('./routes/logs');
 
 
 
@@ -39,6 +40,7 @@ app.use('/url', url);
 app.use('/admins', admins);
 app.use('/blocks', blocks);
 app.use('/tags', tags);
+app.use('/logs', logs);
 
 const Card = require('./models/card');
 

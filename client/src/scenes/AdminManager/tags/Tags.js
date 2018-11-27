@@ -3,7 +3,8 @@ import { connect } from 'react-redux';
 import {addTag, deleteTag, tagDeleteFail} from "../../../actions/tags";
 import {reactLocalStorage} from "reactjs-localstorage";
 import TagDeleteConfirm from "./TagDeleteConfirm";
-
+import { transform, isEqual, isObject } from 'lodash';
+import { difference } from "../../../actions/logs";
 
 class Tags extends React.Component {
     constructor() {
@@ -22,8 +23,21 @@ class Tags extends React.Component {
             addedBy: reactLocalStorage.get('user'),
             deletedBy: ''
         };
+
+        //const oldTags = this.props.tags;
+
         this.props.addTag(data);
         this.tagInputValue.value = '';
+
+        // let obj = '';
+        // setTimeout(
+        //     function() {
+        //         obj = difference(this.props.tags, oldTags);
+        //     }
+        //         .bind(this),
+        //     800
+        // );
+        //
     }
 
     tryDeleteTag(id) {

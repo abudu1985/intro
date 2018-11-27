@@ -1,3 +1,6 @@
+import {reactLocalStorage} from "reactjs-localstorage";
+import {addLog} from "./index";
+
 export const ADD_ADMIN_INIT = 'ADD_ADMIN_INIT';
 export const ADD_ADMIN_SUCCESS = 'ADD_ADMIN_SUCCESS';
 export const ADD_ADMIN_FAIL = 'ADD_ADMIN_FAIL';
@@ -48,17 +51,22 @@ export const addAdmin = (data) => {
                     dispatch(adminAddFail());
                 } else {
                     dispatch(adminAddSuccess(data));
+                    dispatch(addLog("Admin", reactLocalStorage.get('user'), "ADD", Date.now().toString(), data.login));
                 }
             });
     }
 }
 
-export const deleteAdmin = (id, initiator) => {
+export const deleteAdmin = (id, initiator, name) => {
+    console.log(id);
+    console.log(initiator);
+    console.log(name);
     return function(dispatch) {
         return fetch('/api/admins/' + id + '/by/' + initiator, {method: 'DELETE', credentials: 'include'})
             .then(response => response.json())
             .then(json => {
                 dispatch(fetchAdmins());
+                dispatch(addLog("Admin", initiator, "DELETE", Date.now().toString(), name));
             });
     }
 }

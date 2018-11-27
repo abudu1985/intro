@@ -41,13 +41,13 @@ class CardOrderThematicBlock extends React.Component {
         });
 
         const toSortEnd = ({oldIndex, newIndex}) => {
-
             let data = {
                 blockId: state.blockId,
                 initId: state.items[oldIndex].id,
                 initOrder: oldIndex,
                 posId: state.items[newIndex].id,
-                posOrder: newIndex
+                posOrder: newIndex,
+                info: state.block + ", " + state.items[oldIndex].title + " / " + state.items[newIndex].title
             };
 
             this.setState({
@@ -68,8 +68,8 @@ class CardOrderThematicBlock extends React.Component {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        reorderCards: (items) => {
-            dispatch(mixCards(items))
+        reorderCards: (data) => {
+            dispatch(mixCards(data))
         }
     }
 };

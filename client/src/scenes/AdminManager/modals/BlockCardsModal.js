@@ -62,7 +62,9 @@ class BlockCardsModal extends React.Component{
                         <form className="form-group">
                             <label>Block name:</label>
                             <h3><b>{this.state.block.name}</b></h3>
-                            { this.state.block.cards.length !== 0 ?
+                            {console.log(this.state.block.cards.length)}
+                            {console.log(cardsNames)}
+                            {cardsNames.length !== 0 ?
                             <div className="list-group">
                                 <h4>Cards</h4>
                                 <h5 style={{color:'red'}}>Check to delete from block.</h5>

@@ -100,11 +100,10 @@ class AdminManager extends Component {
                                 <hr/>
                                 <ValidAdmins />
                             </div>
-                         {/*add new admin, make as deleted, view previous activity*/}
+                         {/*logs*/}
                             <div>
-                                <List/>
+                                <List />
                             </div>
-                            {/* next ... */}
                         </Content>
                     </Tabs>
                 </div>

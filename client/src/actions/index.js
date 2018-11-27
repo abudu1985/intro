@@ -2,6 +2,7 @@ import {cardEditApply} from "./edit";
 import {reactLocalStorage} from "reactjs-localstorage";
 import {userLoginFail, userLoginSuccess} from "./user";
 import {adminAddFail, adminAddSuccess, fetchAdmins} from "./admins";
+import {addTagInit, tagAddFail, tagAddSuccess} from "./tags";
 
 export const SEARCH_FILTER = 'SEARCH_FILTER';
 export const CARDS_DOWNLOADED = 'CARDS_DOWNLOADED';
@@ -16,6 +17,9 @@ export const BLOCKS_DOWNLOADED = 'BLOCKS_DOWNLOADED';
 export const DELETE_BLOCK_FAIL = 'DELETE_BLOCK_FAIL';
 export const DELETE_BLOCK_SUCCESS = 'DELETE_BLOCK_SUCCESS';
 export const UPDATE_BLOCK_CARDS = 'UPDATE_BLOCK_CARDS';
+export const LOGS_ADD_FAIL = 'LOGS_ADD_FAIL';
+export const LOGS_ADD_SUCCESS = 'LOGS_ADD_SUCCESS';
+export const LOGS_DOWNLOADED = 'LOGS_DOWNLOADED';
 
 
 export function searchFilter(text) {
@@ -38,6 +42,10 @@ export function blocksDownloaded(blocks) {
     return { type: BLOCKS_DOWNLOADED, blocks };
 }
 
+export function logsDownloaded(logs) {
+    return { type: LOGS_DOWNLOADED, logs };
+}
+
 export function cardRemoved(id) {
   return { type: CARD_REMOVED, id };
 }
@@ -58,7 +66,15 @@ export function fetchBlocks() {
     }
 }
 
-export function  mixBlockNames(blockNames){
+export function fetchLogs() {
+    return function (dispatch) {
+        return fetch('/api/logs', {credentials: 'include'})
+            .then(response => response.json())
+            .then(json => dispatch(logsDownloaded(json)));
+    }
+}
+
+export function mixBlockNames(blockNames) {
     return function (dispatch) {
         return fetch('/api/cards/block_names_reorder',
             {
@@ -70,7 +86,13 @@ export function  mixBlockNames(blockNames){
                     'Content-Type': 'application/json'
                 }
             })
-            .then(dispatch(fetchBlocks())   //changeOrderOfBlockNames(blockNames))
+            .then(response => {
+                    response.json().then((data) =>{
+                        dispatch(fetchBlocks());
+                        dispatch( addLog("Block", reactLocalStorage.get('user'),
+                                "UPDATE", Date.now().toString(), "UPDATE BLOCKS ORDER for: " + blockNames.info));
+                    });
+                }
             )
             .catch(err => console.log('There was an error:' + err)
             );
@@ -78,6 +100,7 @@ export function  mixBlockNames(blockNames){
 }
 
 export function  mixCards(data){
+    console.log(data);
     return function (dispatch) {
         return fetch('/api/cards/cards_reorder',
             {
@@ -89,16 +112,17 @@ export function  mixCards(data){
                     'Content-Type': 'application/json'
                 }
             })
-            .then(dispatch(fetchBlocks())
+            .then(response => {
+                    response.json().then((res) =>{
+                        dispatch(fetchBlocks());
+                        dispatch( addLog("Block", reactLocalStorage.get('user'),
+                            "UPDATE", Date.now().toString(), "UPDATE CARDS ORDER WITHIN BLOCK: " + data.info));
+                    });
+                }
             )
             .catch(err => console.log('There was an error:' + err)
             );
     }
-}
-
-// update db with another blockNames order
-export function changeOrderOfBlockNames(blockNames) {
-    return { type: REORDER_BLOCK_NAMES, blockNames };
 }
 
 // when block added
@@ -129,6 +153,14 @@ export function blockDeleteSuccess() {
     return { type: DELETE_BLOCK_SUCCESS};
 }
 
+export function logsAddFail() {
+    return { type: LOGS_ADD_FAIL};
+}
+
+export function logsAddSuccess(data) {
+    return { type: LOGS_ADD_SUCCESS, data};
+}
+
 // addBlock
 export function addBlock(blockName) {
     console.log(blockName);
@@ -145,7 +177,12 @@ export function addBlock(blockName) {
             })
             .then(response => {
                 console.log(response);
-                response.json().then((data) =>{ console.log(data); dispatch(blockAddedSuccess()); dispatch(fetchBlocks())});  // dispatch(userLoginSuccess(data.admin ? true : false));
+                response.json().then((data) =>{
+                    console.log(data);
+                    dispatch(blockAddedSuccess());
+                    dispatch(fetchBlocks());
+                    dispatch(addLog("Block", reactLocalStorage.get('user'), "ADD", Date.now().toString(), blockName.name));
+                });
             })
             .catch(err => console.log('There was an error:' + err)
             );
@@ -163,10 +200,11 @@ export const deleteBlock = (id) => {
                 } else {
                     console.log(response);
                     dispatch(blockDeleteSuccess());
+                    dispatch(addLog("Block", reactLocalStorage.get('user'), "DELETE", Date.now().toString(), id));
                 }
             });
     }
-}
+};
 
 // update block
 export function updateBlock(index, data) {
@@ -182,7 +220,15 @@ export function updateBlock(index, data) {
                 }
             })
             .then(response => {
-                response.json().then((data) =>{ console.log(data); dispatch(blockUpdatedSuccess()); dispatch(fetchBlocks()); dispatch(fetchCards())});
+                response.json().then((res) =>{
+                    dispatch(blockUpdatedSuccess());
+                    dispatch(fetchBlocks());
+                    dispatch(fetchCards());
+                    if(!res.message){
+                        let str = "title: " + data.newName + ", description: " + data.newDescription;
+                        dispatch(addLog("Block", reactLocalStorage.get('user'), "UPDATE", Date.now().toString(), str) );
+                    }
+                });
             })
             .catch(err => console.log('There was an error when trying to update block name:' + err)
             );
@@ -202,12 +248,52 @@ export function updateBlockCards(data) {
                 }
             })
             .then(response => {
-                response.json().then((data) =>{ console.log(data); dispatch(blockCardsUpdatedSuccess()); dispatch(fetchBlocks()); fetchCards()});
+                response.json().then((res) =>{
+                    console.log(res);
+                    dispatch(blockCardsUpdatedSuccess());
+                    dispatch(fetchBlocks());
+                    dispatch(fetchCards());
+                    dispatch(addLog("Block", reactLocalStorage.get('user'), "UPDATE", Date.now().toString(), "UPDATE BLOCK CARDS FOR /" + data.name + "/ " + data.info));
+                });
             })
             .catch(err => console.log('There was an error when trying to update block cards:' + err)
             );
     }
 }
+
+export const addLog = (entity, initiator, action, date, info) => {
+
+    const data = {
+        entity: entity,
+        initiator: initiator,
+        action: action,
+        date: date,
+        info: info
+    };
+
+    return dispatch => {
+        return fetch(
+            '/api/logs/add',
+            {
+                method: 'POST',
+                credentials: 'include',
+                body: JSON.stringify(data),
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                }
+            })
+            .then(response => {
+                console.log(response);
+                if (response.status !== 200) {
+                    dispatch(logsAddFail());
+                } else {
+                    dispatch(logsAddSuccess(data));
+                    dispatch(fetchLogs());
+                }
+            });
+    }
+};
 
 export * from './edit';
 export * from './user';

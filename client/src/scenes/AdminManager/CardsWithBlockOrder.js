@@ -49,7 +49,8 @@ class CardsWithBlockOrder extends React.Component {
                 initId: blocks[oldIndex].id,
                 initOrder: blocks[oldIndex].order,
                 posId: blocks[newIndex].id,
-                posOrder: blocks[newIndex].order
+                posOrder: blocks[newIndex].order,
+                info: blocks[oldIndex].name + " / " + blocks[newIndex].name
             };
 
             this.setState({
