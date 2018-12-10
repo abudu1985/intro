@@ -1,11 +1,9 @@
-# Cogniance Intro Page Server
 ## Requirements
 - Node.js >= 7.6
 - MongoDB >= 3.4.4
 
 ## Installation
 ```
-$ git clone ssh://git@base.cogniance.com:2222/cgn-intro-page/back.git back
 $ cd back
 $ npm install
 ```
@@ -31,12 +29,11 @@ $ node index.js
 
 ## Logging configuration
 The application sends logs to `/var/log/syslog` using `systemd` then `rsyslog` transfers logs to the file. 
-The log file location: `/var/log/cogniance-index/cogniance-index.log`
 
 ## systemd unit file
 ```
 [Unit]
-Description=Cogniance Index
+Description= Index
 After=mongod.service
 
 [Service]
