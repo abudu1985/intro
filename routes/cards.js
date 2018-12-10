@@ -175,29 +175,48 @@ router.post('/cards_reorder', async (req, res) => {
         return;
     }
 
-    Block.update({"_id": req.body.blockId, "cards.card": req.body.initId},
-        {$set: {"cards.$.cardOrder": req.body.posOrder}}, function (error, blocks) {
-            if (error) {
-                logger.error('REORDER CARD UPDATE ERROR');
-                logger.error(error);
-                res.json({message: error});
-            } else {
-                logger.debug('INITIATOR REORDER CARD UPDATE');
-            }
+    Block.find({"_id": req.body.blockId}).lean().exec(function (err, blocks) {
+        let initOrder = '';
+        let posOrder = '';
+
+        let arr = JSON.parse(JSON.stringify(blocks));
+
+        arr.forEach(function (obj) {
+            obj.cards.forEach(function (a) {
+                if (a.card === req.body.initId && a.active === 1) {
+                    initOrder = a.cardOrder;
+                }
+                if (a.card === req.body.posId && a.active === 1) {
+                    posOrder = a.cardOrder;
+                }
+            })
         });
 
-    Block.update({_id: req.body.blockId, "cards.card": req.body.posId},
-        {$set: {"cards.$.cardOrder": req.body.initOrder}}, function (error, blocks) {
-            if (error) {
-                logger.error('POSITION REORDER CARD UPDATE ERROR');
-                logger.error(error);
-                res.json({message: error});
-            } else {
-                logger.debug('POSITION REORDER CARD UPDATE');
-            }
-        });
-     res.json({status: 200});
+        Block.update({"_id": req.body.blockId, "cards.card": req.body.initId},
+            {$set: {"cards.$.cardOrder": posOrder}}, function (error, links) {
+                if (error) {
+                    logger.error('REORDER QUICK LINKS CARD UPDATE ERROR');
+                    logger.error(error);
+                    res.json({message: error});
+                } else {
+                    logger.debug('INITIATOR REORDER CARD UPDATE');
+                }
+            });
+
+        Block.update({_id: req.body.blockId, "cards.card": req.body.posId},
+            {$set: {"cards.$.cardOrder": initOrder}}, function (error, links) {
+                if (error) {
+                    logger.error('POSITION REORDER CARD UPDATE ERROR');
+                    logger.error(error);
+                    res.json({message: error});
+                } else {
+                    logger.debug('POSITION REORDER CARD UPDATE');
+                }
+            });
+        res.json({status: 200});
+    });
 });
+
 
 router.post('/:cardid', async (req, res) => {
   if (!req.user || !req.user.admin) {

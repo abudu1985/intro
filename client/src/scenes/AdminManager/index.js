@@ -5,8 +5,8 @@ import PropTypes from "prop-types";
 import {Redirect} from "react-router-dom";
 
 import Header from "../../components/Header";
-import List from "./admins/AdminsLog";
-import {addAdmin, fetchAdmins} from "../../actions/admins";
+
+import {fetchAdmins} from "../../actions/admins";
 import {Tabs, Nav, Content} from 'react-tiny-tabs';
 import ValidAdmins from "./admins/ValidAdmins";
 import CardCrud from "./CardCrud";
@@ -14,8 +14,9 @@ import BlockOrder from "./BlockOrder";
 import {fetchCards, fetchBlocks} from '../../actions';
 import BlockCrud from "./BlockCrud";
 import CardOrder from "./CardOrder";
-import Tags from "./tags/Tags";
-import {fetchTags} from "../../actions/tags";
+import {fetchQuickLinks} from "../../actions/quickLinks";
+import QuickLink from "./quicklinks/QuickLink";
+import LogTable from "../../components/LogTable";
 
 
 class AdminManager extends Component {
@@ -28,18 +29,7 @@ class AdminManager extends Component {
 
     componentWillMount() {
         this.props.updateAdminsList();
-        this.props.updateTagsList();
-    }
-
-    onAddAdmin() {
-        const data = {
-            id: Date.now().toString(),
-            login: this.adminInputValue.value,
-            addedBy: reactLocalStorage.get('user'),
-            deletedBy: ''
-        };
-        this.props.addAdmin(data);
-        this.adminInputValue.value = '';
+        this.props.updateQuickLinks();
     }
 
     render() {
@@ -57,9 +47,9 @@ class AdminManager extends Component {
                         <Nav>
                             <div>Blocks</div>
                             <div>Cards</div>
-                            <div>Tags</div>
                             <div>Order blocks</div>
                             <div>Order cards</div>
+                            <div>QuickLinks</div>
                             <div>Admins</div>
                             <div>Logs</div>
                         </Nav>
@@ -71,10 +61,6 @@ class AdminManager extends Component {
                             <div>
                                 <CardCrud />
                             </div>
-                        {/* create tags */}
-                            <div>
-                                <Tags />
-                            </div>
                         {/* cards block order */}
                             <div>
                                 {/* here section for card block ordering */}
@@ -85,38 +71,29 @@ class AdminManager extends Component {
                                 {/* here section for cards ordering */}
                                 <CardOrder />
                             </div>
+                        {/* quick links */}
+                            <div>
+                                <QuickLink />
+                            </div>
                         {/* show valid admins */}
                             <div>
-                                <h2>Add more admins</h2>
-                                <div className="form-group">
-                                    <label>Login:</label>
-                                    <input type="text" className="form-control" ref={(input) => {
-                                        this.adminInputValue = input
-                                    }} placeholder="Enter login of next admin"/>
-                                </div>
-                                <button type="submit" className="btn btn-default"
-                                        onClick={this.onAddAdmin.bind(this)}>Submit
-                                </button>
-                                <hr/>
                                 <ValidAdmins />
                             </div>
                          {/*logs*/}
                             <div>
-                                <List />
+                                <LogTable />
                             </div>
                         </Content>
                     </Tabs>
                 </div>
-
             </div>
-
         );
     }
 }
 
 AdminManager.propTypes = {
     updateAdminsList: PropTypes.func.isRequired,
-    updateTagsList: PropTypes.func.isRequired
+    updateQuickLinks: PropTypes.func.isRequired
 };
 
 const mapStateToProps = (state, original) => {
@@ -127,9 +104,6 @@ const mapStateToProps = (state, original) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        addAdmin: (data) => {
-            dispatch(addAdmin(data));
-        },
         updateAdminsList: () => {
             dispatch(fetchAdmins());
         },
@@ -142,8 +116,8 @@ const mapDispatchToProps = (dispatch) => {
             dispatch(fetchBlocks());
         },
 
-        updateTagsList: () => {
-            dispatch(fetchTags());
+        updateQuickLinks: () => {
+            dispatch(fetchQuickLinks());
         },
     }
 }

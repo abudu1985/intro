@@ -1,3 +1,5 @@
+@import "../../styles/colors";
+
 .edit-control {
   display: flex;
   flex-direction: column;
@@ -35,4 +37,20 @@
   display: flex;
   align-self: flex-end;
   justify-content: space-between;
+}
+
+.add_tag_button {
+  background: $blue;
+  color: #fff;
+  height: 38px;
+  padding: 0px 20px;
+  cursor: pointer;
+}
+
+.warning_border {
+  border:1px solid red;
+}
+
+.emptyWarn {
+  color: red;
 }

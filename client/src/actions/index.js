@@ -3,6 +3,7 @@ import {reactLocalStorage} from "reactjs-localstorage";
 import {userLoginFail, userLoginSuccess} from "./user";
 import {adminAddFail, adminAddSuccess, fetchAdmins} from "./admins";
 import {addTagInit, tagAddFail, tagAddSuccess} from "./tags";
+import {fetchQuickLinks} from "./quickLinks";
 
 export const SEARCH_FILTER = 'SEARCH_FILTER';
 export const CARDS_DOWNLOADED = 'CARDS_DOWNLOADED';
@@ -100,7 +101,6 @@ export function mixBlockNames(blockNames) {
 }
 
 export function  mixCards(data){
-    console.log(data);
     return function (dispatch) {
         return fetch('/api/cards/cards_reorder',
             {
@@ -176,9 +176,7 @@ export function addBlock(blockName) {
                 }
             })
             .then(response => {
-                console.log(response);
                 response.json().then((data) =>{
-                    console.log(data);
                     dispatch(blockAddedSuccess());
                     dispatch(fetchBlocks());
                     dispatch(addLog("Block", reactLocalStorage.get('user'), "ADD", Date.now().toString(), blockName.name));
@@ -195,7 +193,6 @@ export const deleteBlock = (id) => {
         return fetch('/api/blocks/' + id, {method: 'DELETE', credentials: 'include'})
             .then(response => {
                 if (response.status !== 200) {
-                  console.log(response);
                     response.json().then((data) =>{ console.log(data); dispatch(blockDeleteFail(data.message)); dispatch(fetchBlocks())});
                 } else {
                     console.log(response);
@@ -257,6 +254,30 @@ export function updateBlockCards(data) {
                 });
             })
             .catch(err => console.log('There was an error when trying to update block cards:' + err)
+            );
+    }
+}
+
+export function updateQuickLinksCards(data) {
+    return function (dispatch) {
+        return fetch('/api/quick_links/update_cards',
+            {
+                method: 'POST',
+                credentials: 'include',
+                body: JSON.stringify(data),
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                response.json().then((res) =>{
+                    console.log(res);
+                    dispatch(fetchQuickLinks());
+                    dispatch(addLog("QuickLinks", reactLocalStorage.get('user'), "UPDATE", Date.now().toString(), "UPDATE QUICK LINKS CARDS" + " / " + data.info));
+                });
+            })
+            .catch(err => console.log('There was an error when trying to update QuickLinks cards:' + err)
             );
     }
 }

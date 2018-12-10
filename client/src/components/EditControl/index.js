@@ -13,37 +13,50 @@ class EditControl extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectValue: ''
+      selectValue: '',
+      emptyTag: false
     };
-    this.handleSelect = this.handleSelect.bind(this);
+    this.handleAddTag = this.handleAddTag.bind(this);
     this.handleInput = this.handleInput.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.onStartTypeTag = this.onStartTypeTag.bind(this);
+    this.blurHandler = this.blurHandler.bind(this);
   }
 
-  handleSelect(event) {
-    this.setState({selectValue: event.target.value});
-    this.props.onTagsChange({target: {value: event.target.value}});
+  handleAddTag(event) {
+      event.preventDefault();
+      const value = this.tagInput.value;
 
-    // let customEvent = new Event('input', {bubbles: true});
-    // if (event.target.value !== 'createnew') {
-    //   this.tagInput.value = event.target.value;
-    // } else {
-    //   this.tagInput.value = '';
-    // }
-    // this.props.onBlockNameChange({target: {value: event.target.value !== 'createnew' ? event.target.value : ''}});
+      if(!value){
+          this.setState({emptyTag: true});
+      } else {
+          this.props.onTagsChange({target: {value: value}});
+          this.tagInput.value = '';
+      }
   }
 
   handleInput(event) {
-    this.props.onBlockNameChange(event);
+      this.props.onBlockNameChange(event);
   }
 
   handleSubmit(event) {
-    event.preventDefault();
-    this.props.onApply();
+      event.preventDefault();
+      this.props.onApply();
+  }
+
+  onStartTypeTag(event) {
+      if (event.target.value.trim() !== "") {
+          this.setState({emptyTag: false});
+      } else {
+          this.setState({emptyTag: true});
+      }
+  }
+
+  blurHandler() {
+      this.setState({emptyTag: false});
   }
 
   render() {
-    let options = this.props.tagNameOptions.map(c => <option key={c}>{c}</option>);
 
     return (
       <form className="edit-control" onSubmit={this.handleSubmit}>
@@ -52,11 +65,15 @@ class EditControl extends React.Component {
         <label>Image: <Input type='file' accept='.svg,.png' onChange={this.props.onImageChange} required={this.props.onDelete ? false : true}/></label>
         <label>Description: <TextArea rows='3' defaultValue={this.props.description || ''} onChange={this.props.onDescriptionChange} required/></label>
           {this.props.onDelete ?
-              <label>Add Tag:
+              <label> { !this.state.emptyTag ? 'Add Tag' : <span className="emptyWarn">Not empty!</span>}
                   <div className='block-name-edit'>
-                      <Select defaultValue={this.state.selectValue} onChange={this.handleSelect}>
-                          {options}
-                      </Select>
+                    <input type='text'
+                           className={this.state.emptyTag ? 'warning_border' : ''}
+                           ref={ input => this.tagInput = input }
+                           onChange={this.onStartTypeTag}
+                           onBlur={this.blurHandler}
+                    />
+                    <button className="add_tag_button" onClick={this.handleAddTag}>Add tag</button>
                   </div>
               </label>
               : null}
@@ -75,7 +92,6 @@ EditControl.propTypes = {
   url: PropTypes.string,
   description: PropTypes.string,
   blockName: PropTypes.string,
-  tagNameOptions: PropTypes.arrayOf(PropTypes.string),
   tags: PropTypes.arrayOf(PropTypes.string),
 
   onTitleChange: PropTypes.func.isRequired,

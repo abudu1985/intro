@@ -2,7 +2,7 @@ import { combineReducers } from 'redux';
 import edit from './edit';
 import cards from './cards';
 import admins from './admins';
-import tags, {ADD_TAG_SUCCESS} from './tags';
+
 import {
     SEARCH_FILTER,
     CARDS_DOWNLOADED,
@@ -11,6 +11,7 @@ import {
     BLOCKS_DOWNLOADED, LOGS_ADD_SUCCESS, LOGS_DOWNLOADED
 } from '../actions';
 import { USER_FETCH_INIT, USER_FETCH_DONE, USER_LOGIN_INIT, USER_LOGIN_SUCCESS, USER_LOGIN_FAIL } from '../actions/user';
+import {QUICK_LINKS_DOWNLOADED} from "../actions/quickLinks";
 
 
 export function additions(state={showQuickLinks: true}, action) {
@@ -65,7 +66,14 @@ export function logs(state = [], action) {
     }
 }
 
-
+export function quickLinks(state = [], action) {
+    switch (action.type) {
+        case QUICK_LINKS_DOWNLOADED:
+            return action.quickLinks;
+        default:
+            return state;
+    }
+}
 
 
 const initialState = {
@@ -75,7 +83,6 @@ const initialState = {
     edit: null,
     admins: null,
     blocks: null,
-    tags: null,
     logs: null
 };
 
@@ -87,7 +94,7 @@ export const rootReducer = (state={}, action) => {
     resultState.edit = edit(resultState.cards, resultState.edit, action);
     resultState.admins = admins(resultState.admins, action);
     resultState.blocks = blocks(resultState.blocks, action);
-    resultState.tags = tags(resultState.tags, action);
     resultState.logs = logs(resultState.logs, action);
+    resultState.quickLinks = quickLinks(resultState.quickLinks, action);
     return resultState;
 };

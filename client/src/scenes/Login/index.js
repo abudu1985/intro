@@ -9,6 +9,7 @@ import Recaptcha from './../../components/Recaptcha';
 import { userLoginSuccess, userLoginFail, doLogin } from '../../actions/user';
 
 import style from './style.scss';
+import {RECAPTCHA_KEY} from '../../../variables';
 
 
 export class Login extends React.Component {
@@ -44,7 +45,9 @@ export class Login extends React.Component {
       this.setState(Object.assign({}, this.state, {errorMessage: 'Are you a robot?'}))
     } else {
       this.props.doLogin(this.state.username, this.state.password, this.state.captcha);
-      this.captchaInput.reset();
+      if(this.props.user.showRecaptcha){
+          this.captchaInput.reset();
+      }
       this.setState(Object.assign({}, this.state, {captcha: ''}));
     }
   }
@@ -76,7 +79,7 @@ export class Login extends React.Component {
               { this.props.user.showRecaptcha ?
             <Recaptcha
               ref={e => this.captchaInput = e}
-              sitekey={global.recaptchaKey}
+              sitekey={RECAPTCHA_KEY}
               verifyCallback={this.verifyCallback}
             /> : null }
           </div>

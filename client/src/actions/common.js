@@ -1,6 +1,7 @@
 
 // return card related to block
 import React from "react";
+import {quickLinks} from "../reducers";
 
 export function groupByBlocks(cards, blockName) {
 
@@ -53,7 +54,9 @@ export function cardsOutsideBlock(cards, blockName) {
     let orderedCards = blockName.cards.sort((a, b) => a.cardOrder - b.cardOrder);
 
     orderedCards.forEach(function (item, i, arr) {
-        cardIds.push(arr[i].card);
+        if (arr[i].active !== 0){
+            cardIds.push(arr[i].card);
+        }
     });
 
     let result = cards.filter(function (item) {
@@ -68,7 +71,6 @@ export function cardsOutsideBlock(cards, blockName) {
     });
 
     freeCards.unshift({ label: '', value: '' });
-
     return freeCards;
 }
 
@@ -192,6 +194,7 @@ export function getActiveBlocksWithFilterableCards(data, cardData) {
     visibleCards.forEach(function (item, i, arr) {
         cardIds.push(arr[i].id);
     });
+
     cardIds.forEach(function (key) {
         withActiveCards.forEach(function (b) {
             let found = false;
@@ -207,34 +210,10 @@ export function getActiveBlocksWithFilterableCards(data, cardData) {
             })
         });
     });
+
     return result1.sort((a, b) => a.order - b.order);
 }
 
-// exclude tags owned by card
-export function tagsOutsideCard(allTags, cardTags) {
-    let tags = [];
-
-    let isDeletedTag = (data) => {
-        if (data) { return true; }
-        return false
-    };
-
-    let validTags = allTags.filter(function(el) {
-        return !isDeletedTag(el.deletedBy);
-    });
-
-    validTags.forEach(function (item, i, arr) {
-        tags.push(arr[i].name);
-    });
-
-    let result = tags.filter(function (item) {
-        return cardTags.indexOf(item) === -1
-    });
-
-    result.unshift('');
-
-    return result;
-}
 
 export function getNameOfAdded(item, id) {
 
@@ -249,5 +228,91 @@ export function getNameOfAdded(item, id) {
                     return true;
             });
         return result1[0];
+}
 
+// return cards that not included in quickLinks
+export function cardsForQuickLinks(cards, quickLinks) {
+
+    let cardIds = [];
+    let freeCards = [];
+
+    let orderedCards = quickLinks[0].cards.sort((a, b) => a.linkOrder - b.linkOrder);
+
+    orderedCards.forEach(function (item, i, arr) {
+        if (arr[i].active !== 0){
+            cardIds.push(arr[i].card);
+        }
+    });
+
+    let result = cards.filter(function (item) {
+        return cardIds.indexOf(item.id) === -1
+    });
+
+    result.forEach(function(item, i, arr) {
+        freeCards[i] = {
+            label: arr[i].title,
+            value: arr[i].id
+        };
+    });
+
+    freeCards.unshift({ label: '', value: '' });
+    return freeCards;
+}
+
+export function groupByQuickLinks(cards, quickLinks) {
+
+    let cardIds = [];
+    let result1 = [];
+
+    if (quickLinks.cards) {
+
+        // only active block active cards
+        let activeQuickLinks = quickLinks.cards.filter(function (item) {
+            return item.active > 0;
+        });
+
+        if (activeQuickLinks) {
+
+            // ordering block cards
+            let orderedCards = activeQuickLinks.sort((a, b) => a.linkOrder - b.linkOrder);
+
+            // get ids of ordered cards related to block
+            orderedCards.forEach(function (item, i, arr) {
+                cardIds.push(arr[i].card);
+            });
+
+            // all cards related to QuickLinks
+            let result = cards.filter(function (item) {
+                return cardIds.indexOf(item.id) > -1
+            });
+
+            // all cards related to block by order
+            cardIds.forEach(function (key) {
+                let found = false;
+                if (result.length !== 0) {
+                    result.filter(function (i) {
+                        if (!found && i.id === key) {
+                            result1.push(i);
+                            found = true;
+                            return false;
+                        } else
+                            return true;
+                    });
+                }
+            });
+
+            return result1.length > 0 ? result1 : [];
+        }
+    }
+}
+
+export function getCardsNamesForQL(cards, quickLinks) {
+
+    let cardsArr = groupByQuickLinks(cards, quickLinks);
+    let result1 = [];
+    cardsArr.forEach(function(i) {
+        result1.push(i.title);
+    });
+
+    return result1;
 }

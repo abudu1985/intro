@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import style from './style.scss';
 import {
     addBlock,
     blockDeleteFail,
@@ -28,25 +29,39 @@ class BlockCrud extends React.Component {
             confirmStatus : false,
             deleteModal: false,
             blocks: {},
-            mode: ''
-        }
+            mode: '',
+            emptyTag: false
+        };
         this.replaceModalItem = this.replaceModalItem.bind(this);
         this.saveModalDetails = this.saveModalDetails.bind(this);
         this.confirmDelete = this.confirmDelete.bind(this);
         this.saveCardsModalDetails = this.saveCardsModalDetails.bind(this);
+        this.confirmCancel = this.confirmCancel.bind(this);
+        this.onAddBlock = this.onAddBlock.bind(this);
+        this.onStartTypeBlockName = this.onStartTypeBlockName.bind(this);
+        this.blurHandler = this.blurHandler.bind(this);
     }
 
     onAddBlock() {
-        const data = {
-            name: this.blockInputValue.value,
-            description: this.blockDescriptionInputValue.value,
-            createdBy: reactLocalStorage.get('user'),
-            date: Date.now().toString()
-        };
+        if (this.blockInputValue.value.trim() === "") {
+            this.setState({emptyTag: true});
+        } else {
+            console.log('not empty');
+            const data = {
+                name: this.blockInputValue.value,
+                description: this.blockDescriptionInputValue.value,
+                createdBy: reactLocalStorage.get('user'),
+                date: Date.now().toString()
+            };
 
-        this.props.addBlock(data);
-        this.blockInputValue.value = '';
-        this.blockDescriptionInputValue.value = '';
+            this.props.addBlock(data);
+            this.blockInputValue.value = '';
+            this.blockDescriptionInputValue.value = '';
+        }
+    }
+
+    confirmCancel() {
+        this.setState({ show: false });
     }
 
     saveModalDetails(item) {
@@ -65,7 +80,6 @@ class BlockCrud extends React.Component {
     saveCardsModalDetails(item) {
 
        let deletedCards = getIdsForDeleted(item);
-       console.log(deletedCards);
 
        let added = getNameOfAdded(item, item.add);
        let deleted = item.delete ? Object.keys(item.delete) : "";
@@ -143,6 +157,18 @@ class BlockCrud extends React.Component {
             });
     }
 
+    onStartTypeBlockName(event) {
+        if (event.target.value.trim() !== "") {
+            this.setState({emptyTag: false});
+        } else {
+            this.setState({emptyTag: true});
+        }
+    }
+
+    blurHandler() {
+        this.setState({emptyTag: false});
+    }
+
     render() {
 
         const dateString = (ut) => {
@@ -155,11 +181,17 @@ class BlockCrud extends React.Component {
         return (
             <div>
                 <h2>Add more blocks</h2>
-                <div className="form-group">
-                    <label>Block name:</label>
-                    <input type="text" className="form-control" ref={(input) => {
-                        this.blockInputValue = input
-                    }} placeholder="Enter block name"/>
+                <div className={this.state.emptyTag ? "form-group has-error" : "form-group"}>
+                    <label>Block name<span style={{'color': 'red'}}><b>*</b></span>:</label>
+                    <input type="text"
+                           className="form-control"
+                           ref={(input) => {this.blockInputValue = input}}
+                           placeholder="Enter block name"
+                           onChange={this.onStartTypeBlockName}
+                           onBlur={this.blurHandler}
+                           required
+                    />
+                    {this.state.emptyTag ? <span className="help-block">Block name should not be empty.</span> : ""}
                 </div>
                 <div className="form-group">
                     <label>Block description:</label>
@@ -168,7 +200,7 @@ class BlockCrud extends React.Component {
                         placeholder="Enter block description" />
                 </div>
                 <button type="submit" className="btn btn-primary"
-                        onClick={this.onAddBlock.bind(this)}>Submit
+                        onClick={() => {this.onAddBlock();}}>Submit
                 </button>
                 <hr/>
                 <h2>Blocks</h2>

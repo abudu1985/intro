@@ -1,12 +1,8 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-
 import ThematicBlock from '../ThematicBlock';
-
-import style from './style.scss';
-
 import {groupByBlocks} from "../../actions/common";
+import style from './style.scss';
 
 
 const Cards = ({onEditInit, canEdit, cards, blockNames}) => {

@@ -7,6 +7,7 @@ import style from './style.scss';
 import {mixBlockNames} from "../../actions";
 import ThematicBlock from "../../components/ThematicBlock";
 import {getActiveBlocksWithCards, groupByBlocks} from "../../actions/common";
+import BlockOrderThematic from "./BlockOrderThematic";
 
 
 class CardsWithBlockOrder extends React.Component {
@@ -22,7 +23,7 @@ class CardsWithBlockOrder extends React.Component {
 
         const SortableItem = SortableElement(({value, i}) =>
 
-        <ThematicBlock
+        <BlockOrderThematic
         blockName={value.name}
         cards={groupByBlocks(this.props.cards, value)}
         key={i}

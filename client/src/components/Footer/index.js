@@ -6,8 +6,8 @@ const footerContent = {
   'People': [
     ['HR', 'https://wiki.cogniance.com/display/COGNIANCE/People+Partners+Team'],
     ['Travel', ''],
-    ['Hospitability', ''],
-    ['Recruting', 'https://wiki.cogniance.com/display/COGNIANCE/Recruiting+Team+Contacts']
+    ['Hospitality', ''],
+    ['Recruiting', 'https://wiki.cogniance.com/display/COGNIANCE/Recruiting+Team+Contacts']
   ],
   'Production': [
     ['Program Management',''],
@@ -71,7 +71,7 @@ class FooterBlock extends React.Component {
 const Footer = (props) => {
   let blocks = [];
   for (let blockName in footerContent) {
-    let links = footerContent[blockName].map(e => <a href={e[1]} key={e[0]}>{e[0]}</a>);
+    let links = footerContent[blockName].map(e => <a href={e[1]} key={e[0]} target='_blank'>{e[0]}</a>);
     blocks.push(<FooterBlock blockName={blockName} links={links} key={blockName}/>)
   }
   return (

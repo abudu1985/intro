@@ -7,12 +7,11 @@ import { searchFilter } from '../../actions';
 import SettingsMenu from '../SettingsMenu';
 
 import style from './style.scss';
-import AdminBar from "../AdminBar";
 
 
 const mapStateToProps = (state) => {
     return state;
-}
+};
 
 const mapDispatchToProps = (dispatch) => {
     return {
@@ -23,12 +22,11 @@ const mapDispatchToProps = (dispatch) => {
             dispatch(searchFilter(val))
         }
     }
-}
+};
 
 class RawHeader extends React.Component{
     constructor(props) {
         super(props);
-        // this.onChange = props.onChange;
         this.adminPage = props.adminPage;
         this.state = {
             touch: false
@@ -44,7 +42,6 @@ class RawHeader extends React.Component{
     }
 
     onStartChange(event) {
-        console.log(event.target.value);
         if(event.target.value !== ""){
             this.setState({ touch: true});
         } else {
@@ -58,7 +55,6 @@ class RawHeader extends React.Component{
         this.searchInput.value = '';
         this.setState({ touch: false});
         this.props.cancelSearch(this.searchInput.value);
-        console.log('hello clear');
     }
 
     render() {
@@ -67,7 +63,10 @@ class RawHeader extends React.Component{
                 <Logo />
                 <div className='interactive-block'>
                     { !this.props.adminPage ?
-                        <input className={!this.state.touch ? 'page-search' : 'page-search-delete'} onChange={this.onStartChange} ref={(input) => { this.searchInput = input; }} />
+                        <input
+                            className={!this.state.touch ? 'page-search' : 'page-search-delete'}
+                            onChange={this.onStartChange} ref={(input) => { this.searchInput = input; }}
+                        />
                         : null }
 
                     {this.state.touch ?
@@ -78,7 +77,6 @@ class RawHeader extends React.Component{
                         >X</button>
                         : null
                     }
-
                     <SettingsMenu/>
                     {/*<a href='/api/auth/logout'><img className='logout' src='static/logout.svg'/></a>*/}
                 </div>

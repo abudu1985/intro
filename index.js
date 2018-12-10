@@ -17,6 +17,7 @@ const admins = require('./routes/admins');
 const blocks = require('./routes/blocks');
 const tags = require('./routes/tags');
 const logs = require('./routes/logs');
+const quickLink = require('./routes/quickLink');
 
 
 
@@ -41,6 +42,7 @@ app.use('/admins', admins);
 app.use('/blocks', blocks);
 app.use('/tags', tags);
 app.use('/logs', logs);
+app.use('/quick_links', quickLink);
 
 const Card = require('./models/card');
 

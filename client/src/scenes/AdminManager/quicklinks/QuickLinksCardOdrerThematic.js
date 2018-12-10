@@ -3,13 +3,11 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import {SortableContainer, SortableElement, arrayMove} from 'react-sortable-hoc';
 
-import style from './style.scss';
-import {mixCards} from "../../actions";
-import Card from "../../components/Card";
-import CardWithoutLink from "./CardWithoutLink";
+import {mixQuickLinksCards} from "../../../actions/quickLinks";
+import CardWithoutLink from "../CardWithoutLink";
 
 
-class CardOrderThematicBlock extends React.Component {
+class QuickLinksCardOrderThematic extends React.Component {
     constructor(props) {
         super(props);
     }
@@ -19,7 +17,7 @@ class CardOrderThematicBlock extends React.Component {
         let state = {
             items: this.props.cards,
             block: this.props.blockName,
-            blockId: this.props.blockId
+            quickLinkId: this.props.quickLinkId
         };
 
         const SortableItem = SortableElement(({value}) =>
@@ -43,7 +41,7 @@ class CardOrderThematicBlock extends React.Component {
 
         const toSortEnd = ({oldIndex, newIndex}) => {
             let data = {
-                blockId: state.blockId,
+                quickLinkId: state.quickLinkId,
                 initId: state.items[oldIndex].id,
                 posId: state.items[newIndex].id,
                 info: state.block + ", " + state.items[oldIndex].title + " / " + state.items[newIndex].title
@@ -57,7 +55,7 @@ class CardOrderThematicBlock extends React.Component {
 
         return (
 
-           <div className={'thematic-block'}>
+            <div className={'thematic-block'}>
                 <h2>{this.props.blockName}</h2>
                 <SortableList items={this.props.cards} onSortEnd={toSortEnd} />
             </div>
@@ -68,9 +66,9 @@ class CardOrderThematicBlock extends React.Component {
 const mapDispatchToProps = (dispatch) => {
     return {
         reorderCards: (data) => {
-            dispatch(mixCards(data))
+            dispatch(mixQuickLinksCards(data))
         }
     }
 };
 
-export default connect(null, mapDispatchToProps)(CardOrderThematicBlock);
+export default connect(null, mapDispatchToProps)(QuickLinksCardOrderThematic);

@@ -8,6 +8,7 @@ import * as editActions from '../../actions/edit';
 import CardTagsList from '../../components/CardTagsList';
 import { tagsOutsideCard } from '../../actions/common';
 import style from './style.scss';
+const $ = require('jquery');
 
 class Edit extends React.Component {
   constructor(props) {
@@ -20,17 +21,25 @@ class Edit extends React.Component {
     this.applyEditResults = this.applyEditResults.bind(this);
   }
 
+  componentWillMount(){
+      $('.tabs-container .tab-nav').css("position", "unset");
+  }
+
+  componentWillUnmount(){
+      $('.tabs-container .tab-nav').css("position", "relative");
+  }
+
   valueChangeHandler(value) {
     return (event => {
       this.props.onEditChange(value, event.target.value);
     }).bind(this);
   }
 
-    tagsChangeHandler(value) {
-        return (event => {
-            this.props.onTagsChange(event.target.value);
-        }).bind(this);
-    }
+  tagsChangeHandler(value) {
+      return (event => {
+          this.props.onTagsChange(event.target.value);
+      }).bind(this);
+  }
 
   imageChangeHandler(event) {
     let reader = new FileReader();
@@ -57,8 +66,6 @@ class Edit extends React.Component {
   }
   render() {
 
-    let tagNames = tagsOutsideCard(this.props.tags, this.props.cardInfo.tags);
-
     return (
       <div className="edit-screen">
         <div className="edit-menu">
@@ -78,7 +85,6 @@ class Edit extends React.Component {
             </div>
             <EditControl
               {...this.props.cardInfo}
-              tagNameOptions={tagNames}
               onTitleChange={this.valueChangeHandler('title')}
               onUrlChange={this.valueChangeHandler('url')}
               onDescriptionChange={this.valueChangeHandler('description')}

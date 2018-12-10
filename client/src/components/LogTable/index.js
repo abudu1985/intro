@@ -148,8 +148,6 @@ class LogTable extends React.Component {
 
     componentDidUpdate(){
         let hiddenInputElement = document.getElementById("example-datepicker");
-        console.log(hiddenInputElement.value);
-        console.log(hiddenInputElement.getAttribute('data-formattedvalue'));
     }
 
     render() {

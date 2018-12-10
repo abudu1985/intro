@@ -1,18 +1,19 @@
 import React from 'react';
 import { Button, Modal } from 'react-bootstrap';
-import {getCardsNames, cardsOutsideBlock} from "../../../actions/common";
-import Chkboxlist from "./Chkboxlist";
-import SelectListGroup from "./SelectListGroup";
+import {cardsForQuickLinks, getCardsNamesForQL} from "../../../actions/common";
+import SelectListGroup from "../modals/SelectListGroup";
+import Chkboxlist from "../modals/Chkboxlist";
 const $ = require('jquery');
 
 
-class BlockCardsModal extends React.Component{
+class QuickLinkCardsModal extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
             show: props.modal,
             block: props.block,
-            cards: props.cards
+            cards: props.cards,
+            quickLinks: props.quickLinks
         };
         this.handleSave = this.handleSave.bind(this);
         this.onChangeSelect = this.onChangeSelect.bind(this);
@@ -22,7 +23,8 @@ class BlockCardsModal extends React.Component{
         if (this.state.show !== nextProps.modal) {
             this.setState({
                 show: nextProps.modal,
-                block: nextProps.block
+                block: nextProps.block,
+                quickLinks: nextProps.quickLinks
             })
         }
     }
@@ -55,9 +57,9 @@ class BlockCardsModal extends React.Component{
 
         let close = () => this.setState({ show: false});
 
-        let cardsNames = getCardsNames(this.state.cards,this.state.block);
+        let cardsNames = getCardsNamesForQL(this.state.cards,this.state.quickLinks[0]);
 
-        let options = cardsOutsideBlock(this.state.cards,this.state.block);
+        let options = cardsForQuickLinks(this.state.cards,this.state.quickLinks);
 
         return (
             <div className="modal-container">
@@ -68,24 +70,22 @@ class BlockCardsModal extends React.Component{
                     aria-labelledby="contained-modal-title"
                 >
                     <Modal.Header closeButton>
-                        <Modal.Title id="contained-modal-title">Block Cards</Modal.Title>
+                        <Modal.Title id="contained-modal-title">QuickLinks Cards</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         <form className="form-group">
-                            <label>Block name:</label>
-                            <h3><b>{this.state.block.name}</b></h3>
                             {cardsNames.length !== 0 ?
-                            <div className="list-group">
-                                <h4>Cards</h4>
-                                <h5 style={{color:'red'}}>Check to delete from block.</h5>
-                                <Chkboxlist
-                                onChange={(values) => this.onChange('delete', values)}
-                                values={cardsNames}
-                                />
+                                <div className="list-group">
+                                    <h4>Links</h4>
+                                    <h5 style={{color:'red'}}>Check to delete from block.</h5>
+                                    <Chkboxlist
+                                        onChange={(values) => this.onChange('delete', values)}
+                                        values={cardsNames}
+                                    />
                                 </div>
                                 :'' }
                             <hr/>
-                            <h5 style={{color:'green'}}>Add card to block.</h5>
+                            <h5 style={{color:'green'}}>Add card to QuickLinks.</h5>
                             <SelectListGroup
                                 placeholder="Add"
                                 name="add"
@@ -104,4 +104,4 @@ class BlockCardsModal extends React.Component{
     }
 }
 
-export default BlockCardsModal;
+export default QuickLinkCardsModal;
