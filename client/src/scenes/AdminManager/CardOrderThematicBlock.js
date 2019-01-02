@@ -6,6 +6,7 @@ import {SortableContainer, SortableElement, arrayMove} from 'react-sortable-hoc'
 import style from './style.scss';
 import {mixCards} from "../../actions";
 import Card from "../../components/Card";
+import CardWithoutLink from "./CardWithoutLink";
 
 
 class CardOrderThematicBlock extends React.Component {
@@ -22,7 +23,7 @@ class CardOrderThematicBlock extends React.Component {
         };
 
         const SortableItem = SortableElement(({value}) =>
-            <Card
+            <CardWithoutLink
                 title={value.title}
                 description={value.description}
                 pic={value.pic}
@@ -41,13 +42,11 @@ class CardOrderThematicBlock extends React.Component {
         });
 
         const toSortEnd = ({oldIndex, newIndex}) => {
-
             let data = {
                 blockId: state.blockId,
                 initId: state.items[oldIndex].id,
-                initOrder: oldIndex,
                 posId: state.items[newIndex].id,
-                posOrder: newIndex
+                info: state.block + ", " + state.items[oldIndex].title + " / " + state.items[newIndex].title
             };
 
             this.setState({
@@ -66,19 +65,12 @@ class CardOrderThematicBlock extends React.Component {
     }
 }
 
-CardOrderThematicBlock.prototype.propTypes = {
-    onEditInit: PropTypes.func.isRequired,
-    canEdit: PropTypes.bool.isRequired,
-    cards: PropTypes.array.isRequired,
-    blockName: PropTypes.array.isRequired
-};
-
 const mapDispatchToProps = (dispatch) => {
     return {
-        reorderCards: (items) => {
-            dispatch(mixCards(items))
+        reorderCards: (data) => {
+            dispatch(mixCards(data))
         }
     }
-}
+};
 
 export default connect(null, mapDispatchToProps)(CardOrderThematicBlock);

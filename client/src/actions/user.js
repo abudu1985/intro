@@ -77,8 +77,7 @@ export const doLogin = (login, password, captcha) => {
                 .then(response => response.json())
                 .then(data => dispatch(userLoginFail(data.show_recaptcha)));
         } else {
-          console.log(response);
-          response.json().then((data) =>{ dispatch(userLoginSuccess(data.admin ? true : false)); console.log(data); reactLocalStorage.set('user', login);});
+          response.json().then((data) =>{ reactLocalStorage.set('full_name', data.displayName); reactLocalStorage.set('user', login); dispatch(userLoginSuccess(data.admin ? true : false));});
         }
       });
   }

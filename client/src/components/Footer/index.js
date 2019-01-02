@@ -6,8 +6,8 @@ const footerContent = {
   'People': [
     ['HR', 'https://wiki.cogniance.com/display/COGNIANCE/People+Partners+Team'],
     ['Travel', ''],
-    ['Hospitability', ''],
-    ['Recruting', 'https://wiki.cogniance.com/display/COGNIANCE/Recruiting+Team+Contacts']
+    ['Hospitality', ''],
+    ['Recruiting', 'https://wiki.cogniance.com/display/COGNIANCE/Recruiting+Team+Contacts']
   ],
   'Production': [
     ['Program Management',''],
@@ -42,8 +42,14 @@ class FooterBlock extends React.Component {
     this.toggleVisible = this.toggleVisible.bind(this);
   }
 
+  componentDidMount() {
+      if (window.innerWidth > 800) {
+          this.setState({visible: true});
+      }
+  }
+
   toggleVisible() {
-    if (window.innerWidth < 1000) {
+    if (window.innerWidth < 800) {
       this.setState({visible: !this.state.visible});
     }
   }
@@ -62,11 +68,10 @@ class FooterBlock extends React.Component {
   }
 }
 
-
 const Footer = (props) => {
   let blocks = [];
   for (let blockName in footerContent) {
-    let links = footerContent[blockName].map(e => <a href={e[1]} key={e[0]}>{e[0]}</a>);
+    let links = footerContent[blockName].map(e => <a href={e[1]} key={e[0]} target='_blank'>{e[0]}</a>);
     blocks.push(<FooterBlock blockName={blockName} links={links} key={blockName}/>)
   }
   return (

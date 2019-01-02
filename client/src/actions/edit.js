@@ -1,10 +1,12 @@
-import {fetchCards} from '../actions';
+import {fetchCards, addLog} from '../actions';
+import {reactLocalStorage} from "reactjs-localstorage";
 
 export const CARD_EDIT_INIT = 'CARD_EDIT_INIT';
 export const CARD_EDIT_CANCEL = 'CARD_EDIT_CANCEL';
 export const CARD_EDIT_APPLY = 'CARD_EDIT_APPLY';
 export const CARD_EDIT_DELETE = 'CARD_EDIT_DELETE';
 export const CARD_EDIT_CHANGE = 'CARD_EDIT_CHANGE';
+export const CARD_TAGS_EDIT_CHANGE = 'CARD_TAGS_EDIT_CHANGE';
 
 export const cardEditInit = (cardID=null) => {
   return {
@@ -19,6 +21,12 @@ export const cardEditChange = (field, value) => {
     field: field,
     value: value
   };
+};
+
+export const cardTagsEditChange = (value) => {
+    return {
+        type: CARD_TAGS_EDIT_CHANGE, value
+    };
 }
 
 export const cardEditCancel = () => {
@@ -54,11 +62,12 @@ export const pushUpdate = () => {
   return (dispatch, getState) => {
     let result = {};
     let edit = Object.assign({}, getState().edit);
-    ['pic', 'title', 'description', 'blockName', 'url'].forEach(field => {
+    ['pic', 'title', 'description', 'url', 'tags'].forEach(field => {
       if (field !== 'pic' || /^data:image/.test(edit[field])) {
         result[field] = edit[field];
       }
     });
+
     return fetch('/api/cards' + (edit.id ? '/' + edit.id : ''),
       {
         method: 'POST',
@@ -71,8 +80,14 @@ export const pushUpdate = () => {
       })
       .then(response => response.json())
       .then(json => {
+          console.log(result);
         dispatch(cardEditApply());
         dispatch(fetchCards());
+        let info = " title: " + result.title + ", url: " + result.url + ", description: " + result.description + ", tags[" + result.tags.join() + "]";
+        dispatch(addLog("Card", reactLocalStorage.get('user'),
+            edit.id ? "UPDATE" : "ADD",
+            Date.now().toString(), info
+        ));
       });
   }
 };

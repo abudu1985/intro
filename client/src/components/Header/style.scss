@@ -1,7 +1,7 @@
 @import '../../styles/colors';
 
 .header {
-  z-index: 1;
+  z-index: 2;
   position: relative;
   width: 100%;
   background-color: #ffffff;
@@ -15,6 +15,11 @@
   .interactive-block {
     display: flex;
     align-items: center;
+    @media (min-width: 776px) {
+      .search-string {
+        margin-right: 12px;
+      }
+    }
   }
 
   .logo {
@@ -26,7 +31,6 @@
     width: 100px;
     height: 30px;
     margin: 0px 20px 0px 0px;
-    border-bottom: 1px solid transparent;
     font-size: 13px;
     padding-right: 25px;
     color: $subtitle-text-color;
@@ -40,11 +44,29 @@
     width: 21px;
     height: 21px;
   }
+
+  .page-search-delete {
+    width: 100px;
+    height: 30px;
+    margin: 0px 20px 0px 0px;
+    border-bottom: 1px solid transparent;
+    font-size: 13px;
+    padding-right: 25px;
+    color: $subtitle-text-color;
+    &:focus {
+      outline: none;
+      color: $title-text-color;
+    }
+  }
 }
 
 @media (max-width: 775px) {
   .header {
     .page-search {
+      text-align: right;
+    }
+
+    .page-search-delete {
       text-align: right;
     }
   }
@@ -56,5 +78,73 @@
       border-bottom: 1px solid $blue;
       width: 200px;
     }
+
+    .page-search-delete {
+      border-bottom: 1px solid $blue;
+      width: 200px;
+    }
   }
+}
+
+.search-close-icon {
+  width: 20px;
+  height: 20px;
+  background-color: lightcoral;
+  z-index:1;
+  right: 3px;
+  top: 0;
+  bottom: 0;
+  border-radius: 50%;
+  text-align: center;
+  color: white;
+  font-weight: normal;
+  font-size: 12px;
+  cursor: pointer;
+  border:1px solid;
+  display: inline-block;
+  vertical-align: middle;
+  outline: 0;
+  margin-left: -20px;
+}
+
+.test {
+  width: 100px;
+  height: 30px;
+  margin: 0px 20px 0px 0px;
+  border-bottom: 1px solid transparent;
+  font-size: 13px;
+  padding-right: 25px;
+  color: $subtitle-text-color;
+}
+
+.quick-search {
+  border: none;
+  border-bottom: 2px solid transparent;
+  outline: none;
+  border-bottom: none;
+  @media (max-width: 365px) {
+    width: 140px;
+  }
+}
+
+.animation {
+  transition: all 1s ease;
+  float: right;
+  width: 0;
+}
+
+input.quick-search:focus + .animation {
+  border-bottom: 2px solid $blue;
+  width: 100%;
+}
+
+input#quicksearch {
+  background: url(/static/new-search.png) no-repeat right center;
+  @media (max-width: 365px) {
+    width: 140px;
+  }
+}
+
+.hide-search {
+  visibility: hidden;
 }

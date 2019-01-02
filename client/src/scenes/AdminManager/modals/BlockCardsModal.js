@@ -1,10 +1,9 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
 import { Button, Modal } from 'react-bootstrap';
 import {getCardsNames, cardsOutsideBlock} from "../../../actions/common";
 import Chkboxlist from "./Chkboxlist";
 import SelectListGroup from "./SelectListGroup";
+const $ = require('jquery');
 
 
 class BlockCardsModal extends React.Component{
@@ -23,19 +22,19 @@ class BlockCardsModal extends React.Component{
         if (this.state.show !== nextProps.modal) {
             this.setState({
                 show: nextProps.modal,
-                block: nextProps.block
+                block: nextProps.block,
+                cards: nextProps.cards
             })
         }
-    }
-
-    blockNameHandler(e) {
-        this.setState({ blockName: e.target.value });
     }
 
     handleSave() {
         const item = this.state;
         this.props.saveCardsModalDetails(item);
-       // console.log(item);
+        this.setState({
+            delete: '',
+            add: ''
+        });
     }
 
     onChange(name, values) {
@@ -44,19 +43,22 @@ class BlockCardsModal extends React.Component{
 
     onChangeSelect(e) {
         this.setState({ add: e.target.value });
-       // console.log(this.state);
     }
 
 
     render(){
+
+        if(this.state.show){
+            $('.tabs-container .tab-nav').css("position", "unset");
+        } else {
+            $('.tabs-container .tab-nav').css("position", "relative");
+        }
+
         let close = () => this.setState({ show: false});
 
         let cardsNames = getCardsNames(this.state.cards,this.state.block);
 
         let options = cardsOutsideBlock(this.state.cards,this.state.block);
-
-        // console.log(cardsNames);
-        // console.log(options1);
 
         return (
             <div className="modal-container">
@@ -72,9 +74,8 @@ class BlockCardsModal extends React.Component{
                     <Modal.Body>
                         <form className="form-group">
                             <label>Block name:</label>
-                            {/*<input type='text' className="form-control" value={this.state.block.id} onChange={(e) => this.blockNameHandler(e)} />*/}
                             <h3><b>{this.state.block.name}</b></h3>
-                            { this.state.block.cards.length !== 0 ?
+                            {cardsNames.length !== 0 ?
                             <div className="list-group">
                                 <h4>Cards</h4>
                                 <h5 style={{color:'red'}}>Check to delete from block.</h5>

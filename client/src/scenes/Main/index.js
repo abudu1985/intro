@@ -5,13 +5,14 @@ import { connect } from 'react-redux';
 import Edit from './../Edit';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
-import Cards from '../../components/Cards';
 import QuickLinks from '../../components/QuickLinks';
 import AdminBar from '../../components/AdminBar';
 
 import * as editActions from '../../actions/edit';
 import {fetchCards, fetchBlocks} from '../../actions';
-import {getActiveBlocksWithCards} from '../../actions/common'
+import {getActiveBlocksWithFilterableCards} from '../../actions/common'
+import AnimateCards from "../../components/animate/AnimateCards";
+import {fetchQuickLinks} from "../../actions/quickLinks";
 
 
 class Main extends React.Component {
@@ -20,20 +21,21 @@ class Main extends React.Component {
     }
 
     componentWillMount() {
+        this.props.updateQuickLinks();
         this.props.updateCardsList();
         this.props.getBlocks();
     }
 
     render() {
 
-        let blocks = getActiveBlocksWithCards(this.props.blocks);
+        let blocks = getActiveBlocksWithFilterableCards(this.props.blocks, this.props.cards);
 
         return (
             <div>
                 <Header adminPage={false}/>
-                <QuickLinks/>
+                {this.props.quickLinks ? <QuickLinks/> : ""}
                 {this.props.canEdit ? <AdminBar initEditing={this.props.onEditInit}/> : null}
-                <Cards
+                <AnimateCards
                     onEditInit={this.props.onEditInit}
                     canEdit={this.props.canEdit}
                     cards={this.props.cards.filter(c => !c.hidden)}
@@ -67,9 +69,10 @@ const mapStateToProps = (state, original) => {
     cards: state.cards,
     canEdit: false,//state.userInfo.canEdit,
     edit: state.edit,
-    blocks: state.blocks
+    blocks: state.blocks,
+    quickLinks: state.quickLinks
   });
-}
+};
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -95,7 +98,11 @@ const mapDispatchToProps = (dispatch) => {
 
     getBlocks: () => {
         dispatch(fetchBlocks());
-    }
+    },
+
+    updateQuickLinks: () => {
+        dispatch(fetchQuickLinks());
+    },
   }
 }
 

@@ -5,25 +5,41 @@ import Card from '../../components/Card';
 import EditControl from '../../components/EditControl';
 import RoundButton from '../../components/RoundButton';
 import * as editActions from '../../actions/edit';
-
+import CardTagsList from '../../components/CardTagsList';
+import { tagsOutsideCard } from '../../actions/common';
 import style from './style.scss';
-
+const $ = require('jquery');
 
 class Edit extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       showConfirmation: false,
-      allow: false
+      allow: false,
+      inEntity: ''
     };
     this.imageChangeHandler = this.imageChangeHandler.bind(this);
     this.applyEditResults = this.applyEditResults.bind(this);
+  }
+
+  componentWillMount(){
+      $('.tabs-container .tab-nav').css("position", "unset");
+  }
+
+  componentWillUnmount(){
+      $('.tabs-container .tab-nav').css("position", "relative");
   }
 
   valueChangeHandler(value) {
     return (event => {
       this.props.onEditChange(value, event.target.value);
     }).bind(this);
+  }
+
+  tagsChangeHandler(value) {
+      return (event => {
+          this.props.onTagsChange(event.target.value);
+      }).bind(this);
   }
 
   imageChangeHandler(event) {
@@ -43,24 +59,27 @@ class Edit extends React.Component {
           .then(response => {
               response.json().then((data) => {
                   if (data.allow) {
-                      console.log(data);
                       this.setState({allow: true});
+                  } else {
+                      this.setState({inEntity: data.entity})
                   }
               });
-
           });
   }
-
   render() {
-
-    let blockNames = this.props.blocks.map(item => item.name);
 
     return (
       <div className="edit-screen">
         <div className="edit-menu">
+          {/*show tags here*/}
+            {this.props.cardInfo.id !== null ?
+                this.props.cardInfo.tags.length !== 0 ?
+                    <b>Tags: </b> : <b>No Tags yet. </b>
+             : ''
+            }
+          <CardTagsList />
           <div className="edit-main-screen">
             <div className="edit-preview">
-              <h2> {this.props.cardInfo.blockName}</h2>
               <Card 
                 title={this.props.cardInfo.title}
                 pic={this.props.cardInfo.pic}
@@ -68,12 +87,12 @@ class Edit extends React.Component {
             </div>
             <EditControl
               {...this.props.cardInfo}
-              blockNameOptions={blockNames}
               onTitleChange={this.valueChangeHandler('title')}
               onUrlChange={this.valueChangeHandler('url')}
               onDescriptionChange={this.valueChangeHandler('description')}
               onImageChange={this.imageChangeHandler}
               onBlockNameChange={this.valueChangeHandler('blockName')}
+              onTagsChange={this.tagsChangeHandler('tags')}
               onCancel={this.props.cancelEditing}
               onApply={this.applyEditResults}
               onDelete={this.props.cardInfo.id ? () => {this.setState({showConfirmation: true}); this.tryDeleteCard(this.props.cardInfo.id)} : null}/>
@@ -91,7 +110,7 @@ class Edit extends React.Component {
                 :
                 <div className="edit-confirmation-screen" style={{display: this.state.showConfirmation ? null : 'none'}}>
                     <div className="edit-confirmation-menu">
-                        <h4 className="edit-confirmation-text">This card used in block, you can not delete it.</h4>
+                        <h4 className="edit-confirmation-text">This card used in {this.state.inEntity}, you can not delete it.</h4>
                         <div className="edit-confirmation-control">
                             <RoundButton innerHtml='Cancel' onClick={() => this.setState({showConfirmation: false})} />
                         </div>
@@ -110,7 +129,8 @@ const mapStateToProps = (state, original) => {
     cards: state.cards,
     cardInfo: state.edit,
     canEdit: state.userInfo.canEdit,
-    blocks: state.blocks
+    blocks: state.blocks,
+    tags: state.tags
   });
 }
 
@@ -134,6 +154,10 @@ const mapDispatchToProps = (dispatch) => {
 
     sendEdit: (cardInfo) => {
       dispatch(editActions.pushUpdate());
+    },
+
+    onTagsChange: (value) => {
+        dispatch(editActions.cardTagsEditChange(value));
     }
   }
 }

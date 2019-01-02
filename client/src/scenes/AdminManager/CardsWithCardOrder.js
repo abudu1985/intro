@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import ThematicBlock from "../../components/ThematicBlock";
 import CardOrderThematicBlock from "./CardOrderThematicBlock";
 import {groupByBlocks} from "../../actions/common";
 

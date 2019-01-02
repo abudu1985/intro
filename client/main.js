@@ -19,6 +19,8 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 
 import style from './src/styles/main.scss';
 import AdminManager from "./src/scenes/AdminManager";
+import { SITE_TITLE } from './variables'
+import Favicon from 'react-favicon';
 
 // const composeEnhancers =
 //   typeof window === 'object' &&
@@ -45,19 +47,23 @@ store.dispatch(doFetch());
 
 
 const Root = ({ store }) => (
-  <Provider store={store}>
-    <Router>
-      <div>
-          <Switch>
-          <Route exact path="/adminmanager" component={AdminManager} />
-        <PrivateRoute exact path="/" component={Main}/>
-        <Route path="/login" component={Login} />
-          </Switch>
-      </div>
-    </Router>
-  </Provider>
+    <Provider store={store}>
+        <Router>
+            <div>
+                <div>
+                    <Favicon url="./static/icons8-quest-40.png"/>
+                </div>
+                <Switch>
+                    <Route exact path="/adminmanager" component={AdminManager}/>
+                    <PrivateRoute exact path="/" component={Main}/>
+                    <Route path="/login" component={Login}/>
+                </Switch>
+            </div>
+        </Router>
+    </Provider>
 );
 
+document.title = SITE_TITLE;
 
 window.onload = function() {
   ReactDOM.render(

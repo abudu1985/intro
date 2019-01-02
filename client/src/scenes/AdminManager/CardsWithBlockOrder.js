@@ -7,6 +7,7 @@ import style from './style.scss';
 import {mixBlockNames} from "../../actions";
 import ThematicBlock from "../../components/ThematicBlock";
 import {getActiveBlocksWithCards, groupByBlocks} from "../../actions/common";
+import BlockOrderThematic from "./BlockOrderThematic";
 
 
 class CardsWithBlockOrder extends React.Component {
@@ -22,7 +23,7 @@ class CardsWithBlockOrder extends React.Component {
 
         const SortableItem = SortableElement(({value, i}) =>
 
-        <ThematicBlock
+        <BlockOrderThematic
         blockName={value.name}
         cards={groupByBlocks(this.props.cards, value)}
         key={i}
@@ -49,7 +50,8 @@ class CardsWithBlockOrder extends React.Component {
                 initId: blocks[oldIndex].id,
                 initOrder: blocks[oldIndex].order,
                 posId: blocks[newIndex].id,
-                posOrder: blocks[newIndex].order
+                posOrder: blocks[newIndex].order,
+                info: blocks[oldIndex].name + " / " + blocks[newIndex].name
             };
 
             this.setState({
@@ -70,11 +72,6 @@ class CardsWithBlockOrder extends React.Component {
     }
 }
 
-CardsWithBlockOrder.prototype.propTypes = {
-    onEditInit: PropTypes.func.isRequired,
-    canEdit: PropTypes.bool.isRequired,
-    cards: PropTypes.array.isRequired,
-};
 
 const mapStateToProps = (state, original) => {
     return Object.assign({}, original, {

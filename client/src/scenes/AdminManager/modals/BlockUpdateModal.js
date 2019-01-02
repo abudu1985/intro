@@ -1,5 +1,6 @@
 import React from 'react';
 import { Button, Modal } from 'react-bootstrap';
+const $ = require('jquery');
 
 
 class BlockUpdateModal extends React.Component{
@@ -37,6 +38,13 @@ class BlockUpdateModal extends React.Component{
     }
 
     render(){
+
+        if(this.state.show){
+            $('.tabs-container .tab-nav').css("position", "unset");
+        } else {
+            $('.tabs-container .tab-nav').css("position", "relative");
+        }
+
         let close = () => this.setState({ show: false});
         return (
             <div className="modal-container">

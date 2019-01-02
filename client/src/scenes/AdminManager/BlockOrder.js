@@ -46,7 +46,7 @@ const mapStateToProps = (state, original) => {
         edit: state.edit,
         blocks: state.blocks
     });
-}
+};
 
 const mapDispatchToProps = (dispatch) => {
     return {
@@ -74,6 +74,6 @@ const mapDispatchToProps = (dispatch) => {
             dispatch(fetchBlocks());
         }
     }
-}
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(BlockOrder);

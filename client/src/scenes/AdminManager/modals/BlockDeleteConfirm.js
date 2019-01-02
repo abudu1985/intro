@@ -1,7 +1,6 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
 import { Button, Modal } from 'react-bootstrap';
+const $ = require('jquery');
 
 
 class BlockDeleteConfirm extends React.Component{
@@ -19,6 +18,13 @@ class BlockDeleteConfirm extends React.Component{
     }
 
     render(){
+
+        if(this.state.show){
+            $('.tabs-container .tab-nav').css("position", "unset");
+        } else {
+            $('.tabs-container .tab-nav').css("position", "relative");
+        }
+
         let close = () => this.setState({ show: false});
         return (
             <div className="modal-container">
@@ -36,10 +42,8 @@ class BlockDeleteConfirm extends React.Component{
                             <h3>Warning!</h3>
                         </div>
                         <h4>Move cards from this block into other blocks and then try again.</h4>
-                        {/*<p>{ this.props.message }<b>{this.props.blockName}</b></p>*/}
                     </Modal.Body>
                     <Modal.Footer>
-                        {/*<Button bsStyle="primary" onClick={() => { this.handleDelete(true); close(); }}>DELETE</Button>*/}
                         <Button onClick={() => { this.handleDelete(); close(); }}>CANCEL</Button>
                     </Modal.Footer>
                 </Modal>

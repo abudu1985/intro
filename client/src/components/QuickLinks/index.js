@@ -4,20 +4,16 @@ import { connect } from 'react-redux';
 import IconImage from '../IconImage';
 
 import style from './style.scss';
-
+import {COMPANY_NAME} from '../../../variables';
+import {groupByQuickLinks} from "../../actions/common";
 
 const mapStateToProps = (state) => {
-  return {showQuickLinks: state.additions.showQuickLinks, cards: state.cards};
-}
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    onChange: (event) => {
-      dispatch(searchFilter(event.target.value))
-    }
-  }
-}
-
+    return {
+        showQuickLinks: state.additions.showQuickLinks,
+        cards: state.cards,
+        quickLinks: state.quickLinks
+    };
+};
 
 function QuickCard(props) {
   return (
@@ -30,39 +26,42 @@ function QuickCard(props) {
 
 
 function RawQuickLinks(props) {
-  let cards = props.cards.concat().sort((a, b) => {
-    return b.rating - a.rating ? b.rating - a.rating : b.title > a.title;
-  });
-  if (cards.length > 5) {
-    cards = cards.slice(0, 5);
-  }
-  cards = cards.map((card) => {
-    return (
-      <QuickCard card={card} key={card.id}/>
-    );
-  });
-  if (!props.showQuickLinks) {
-    return null;
-  }
-  return (
-    <div className='quick-block'>
-      <div className='content-wrapper'>
-        <div className='quick-block-wrapper'>
-          <p>
-            Welcome to Cogniance Index, a landing page to rule them all
-          </p>
-          <div className='quick-cards-list'>
-            {cards}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+
+    if (props.quickLinks[0] && props.quickLinks[0].cards.length !== 0) {
+
+        let cards = groupByQuickLinks(props.cards, props.quickLinks[0]);
+        if (cards.length !== 0) {
+
+            if (cards.length > 5) {
+                cards = cards.slice(0, 5);
+            }
+            cards = cards.map((card) => {
+                return (
+                    <QuickCard card={card} key={card.id}/>
+                );
+            });
+            if (!props.showQuickLinks) {
+                return null;
+            }
+            return (
+                <div className='quick-block'>
+                    <div className='content-wrapper'>
+                        <div className='quick-block-wrapper'>
+                            <p>
+                                Welcome to {COMPANY_NAME} Index, a landing page to rule them all
+                            </p>
+                            <div className='quick-cards-list'>
+                                {cards}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+    }
+    return (<div></div>)
 }
 
-const QuickLinks = connect(
-  mapStateToProps,
-  null,
-)(RawQuickLinks);
+const QuickLinks = connect(mapStateToProps, null)(RawQuickLinks);
 
 export default QuickLinks;

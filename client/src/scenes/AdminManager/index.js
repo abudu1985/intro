@@ -5,8 +5,8 @@ import PropTypes from "prop-types";
 import {Redirect} from "react-router-dom";
 
 import Header from "../../components/Header";
-import List from "./admins/AdminsLog";
-import {addAdmin, fetchAdmins} from "../../actions/admins";
+
+import {fetchAdmins} from "../../actions/admins";
 import {Tabs, Nav, Content} from 'react-tiny-tabs';
 import ValidAdmins from "./admins/ValidAdmins";
 import CardCrud from "./CardCrud";
@@ -14,6 +14,9 @@ import BlockOrder from "./BlockOrder";
 import {fetchCards, fetchBlocks} from '../../actions';
 import BlockCrud from "./BlockCrud";
 import CardOrder from "./CardOrder";
+import {fetchQuickLinks} from "../../actions/quickLinks";
+import QuickLink from "./quicklinks/QuickLink";
+import LogTable from "../../components/LogTable";
 
 
 class AdminManager extends Component {
@@ -26,18 +29,7 @@ class AdminManager extends Component {
 
     componentWillMount() {
         this.props.updateAdminsList();
-        //this.props.getBlocks();
-    }
-
-    onAddAdmin() {
-        const data = {
-            id: Date.now().toString(),
-            login: this.adminInputValue.value,
-            addedBy: reactLocalStorage.get('user'),
-            deletedBy: ''
-        };
-        this.props.addAdmin(data);
-        this.adminInputValue.value = '';
+        this.props.updateQuickLinks();
     }
 
     render() {
@@ -57,6 +49,7 @@ class AdminManager extends Component {
                             <div>Cards</div>
                             <div>Order blocks</div>
                             <div>Order cards</div>
+                            <div>QuickLinks</div>
                             <div>Admins</div>
                             <div>Logs</div>
                         </Nav>
@@ -78,38 +71,29 @@ class AdminManager extends Component {
                                 {/* here section for cards ordering */}
                                 <CardOrder />
                             </div>
+                        {/* quick links */}
+                            <div>
+                                <QuickLink />
+                            </div>
                         {/* show valid admins */}
                             <div>
-                                <h2>Add more admins</h2>
-                                <div className="form-group">
-                                    <label>Login:</label>
-                                    <input type="text" className="form-control" ref={(input) => {
-                                        this.adminInputValue = input
-                                    }} placeholder="Enter login of next admin"/>
-                                </div>
-                                <button type="submit" className="btn btn-default"
-                                        onClick={this.onAddAdmin.bind(this)}>Submit
-                                </button>
-                                <hr/>
                                 <ValidAdmins />
                             </div>
-                         {/*add new admin, make as deleted, view previous activity*/}
+                         {/*logs*/}
                             <div>
-                                <List/>
+                                <LogTable />
                             </div>
-                            {/* next ... */}
                         </Content>
                     </Tabs>
                 </div>
-
             </div>
-
         );
     }
 }
 
 AdminManager.propTypes = {
-    updateAdminsList: PropTypes.func.isRequired
+    updateAdminsList: PropTypes.func.isRequired,
+    updateQuickLinks: PropTypes.func.isRequired
 };
 
 const mapStateToProps = (state, original) => {
@@ -120,9 +104,6 @@ const mapStateToProps = (state, original) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        addAdmin: (data) => {
-            dispatch(addAdmin(data));
-        },
         updateAdminsList: () => {
             dispatch(fetchAdmins());
         },
@@ -133,7 +114,11 @@ const mapDispatchToProps = (dispatch) => {
 
         getBlocks: () => {
             dispatch(fetchBlocks());
-        }
+        },
+
+        updateQuickLinks: () => {
+            dispatch(fetchQuickLinks());
+        },
     }
 }
 

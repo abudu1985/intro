@@ -1,0 +1,34 @@
+
+.glyphicon-triangle-bottom:before {
+  content: "";
+}
+
+.glyphicon-triangle-top:before {
+  content: "";
+}
+
+.search-string + div {
+  div:first-child {
+    padding: 0px 0px 0px 15px !important;
+  }
+  div:last-child {
+    left: auto !important;
+    right: 0;
+  }
+  margin-left: 15px;
+}
+
+.hide-search + div {
+  div:first-child {
+    padding: 0px 0px 0px 15px !important;
+  }
+  div:last-child {
+    left: auto !important;
+    right: 0;
+  }
+  margin-left: 15px;
+}
+
+.home-link {
+  margin-left: -15px;
+}
