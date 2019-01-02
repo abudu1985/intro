@@ -1,4 +1,3 @@
-# Cogniance Intro page Client
 
 ## Installation
 clone latest `prebuilt` branch of this repository into directory and serve it as usual static files by nginx.
@@ -7,7 +6,7 @@ clone latest `prebuilt` branch of this repository into directory and serve it as
 Default reCAPTCHA site key is used. In order to change it please find in `index.html` next line and change it to your key.
 ```
     <script>
-      var recaptchaKey = "6Le1aiwUAAAAAEQZ9zmQjMnj0aBxVX-pKhBXK-RQ";
+      var recaptchaKey = "6Le1aiwUAAAAAEQZ9zmQjMnj0aBxVX-pKhBXK-FF";
     </script>
 ```
 
