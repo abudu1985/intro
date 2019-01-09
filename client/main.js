@@ -21,6 +21,7 @@ import style from './src/styles/main.scss';
 import AdminManager from "./src/scenes/AdminManager";
 import { SITE_TITLE } from './variables'
 import Favicon from 'react-favicon';
+import Calendar from './src/scenes/Calendar';
 
 // const composeEnhancers =
 //   typeof window === 'object' &&
@@ -56,6 +57,7 @@ const Root = ({ store }) => (
                 <Switch>
                     <Route exact path="/adminmanager" component={AdminManager}/>
                     <PrivateRoute exact path="/" component={Main}/>
+                    <Route exact path="/calendar" component={Calendar}/>
                     <Route path="/login" component={Login}/>
                 </Switch>
             </div>

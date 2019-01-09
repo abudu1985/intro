@@ -42,6 +42,10 @@ class SettingsMenu extends React.Component {
                 </div>
                 <br/>
                 <div>
+                    <Link to="/calendar">Calendar</Link>
+                </div>
+                <br/>
+                <div>
                     {this.props.canEdit ? <Link to="/adminmanager">Adminmanager</Link> : null}
                 </div>
                 <MenuItem type='separator'/>
