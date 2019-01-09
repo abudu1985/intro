@@ -1,9 +1,8 @@
 import React from 'react';
 import { Button, Modal } from 'react-bootstrap';
 const $ = require('jquery');
-import {DatetimePickerTrigger} from 'rc-datetime-picker';
 import moment from "moment";
-import DatePicker from "react-datepicker";
+let DateTimeField = require('react-bootstrap-datetimepicker');
 
 
 class EventCreateModal extends React.Component{
@@ -15,7 +14,8 @@ class EventCreateModal extends React.Component{
             blockDescription: props.blockDescription,
             start: props.start,
             end: props.end,
-            moment: moment()
+            moment: moment(),
+            startDate: new Date()
         };
         this.handleSave = this.handleSave.bind(this);
         this.handleChange = this.handleChange.bind(this);
@@ -44,9 +44,9 @@ class EventCreateModal extends React.Component{
         this.props.saveModalDetails(item);
     }
 
-    handleChange(moment){
+    handleChange(date) {
         this.setState({
-            moment: moment
+            startDate: date
         });
     }
 
@@ -90,22 +90,7 @@ class EventCreateModal extends React.Component{
                                           onChange={(e) => this.blockDescriptionHandler(e)}/>
                             </div>
                             <div className="form-group">
-                                {/*<DatetimePickerTrigger*/}
-                                    {/*shortcuts={shortcuts}*/}
-                                    {/*moment={this.state.moment}*/}
-                                    {/*onChange={this.handleChange()}>*/}
-                                    {/*<input type="text" value={this.state.end} readOnly />*/}
-                                {/*</DatetimePickerTrigger>*/}
-                                <DatePicker
-                                    selected={this.state.start}
-                                    onChange={this.handleChange}
-                                    showTimeSelect
-                                    timeFormat="HH:mm"
-                                    timeIntervals={15}
-                                    dateFormat="MMMM d, yyyy h:mm aa"
-                                    timeCaption="time"
-                                    dropdownMode="select"
-                                />
+                            <DateTimeField />
                             </div>
                         </form>
                     </Modal.Body>
