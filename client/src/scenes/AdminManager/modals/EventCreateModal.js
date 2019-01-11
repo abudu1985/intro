@@ -2,6 +2,7 @@ import React from 'react';
 import { Button, Modal } from 'react-bootstrap';
 const $ = require('jquery');
 import moment from "moment";
+import SelectListGroup from "./SelectListGroup";
 let DateTimeField = require('react-bootstrap-datetimepicker');
 
 
@@ -10,15 +11,24 @@ class EventCreateModal extends React.Component{
         super(props);
         this.state = {
             show: props.modal,
-            blockName: props.blockName,
-            blockDescription: props.blockDescription,
+            who: '',
+            description: '',
             start: props.start,
             end: props.end,
             moment: moment(),
-            startDate: new Date()
+            startDate: new Date(),
+            allDay: false,
+            newCause: false,
+            cause: ''
         };
         this.handleSave = this.handleSave.bind(this);
         this.handleChange = this.handleChange.bind(this);
+        this.handleAllDayChange = this.handleAllDayChange.bind(this);
+        this.onChangeSelect = this.onChangeSelect.bind(this);
+        this.returnToDefaultCause = this.returnToDefaultCause.bind(this);
+        this.whoHandler = this.whoHandler.bind(this);
+        this.descriptionHandler = this.descriptionHandler.bind(this);
+        this.changeCauseInput = this.changeCauseInput.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -31,12 +41,12 @@ class EventCreateModal extends React.Component{
         }
     }
 
-    blockNameHandler(e) {
-        this.setState({ blockName: e.target.value });
+    whoHandler(e) {
+        this.setState({who: e.target.value});
     }
 
-    blockDescriptionHandler(e) {
-        this.setState({ blockDescription: e.target.value });
+    descriptionHandler(e) {
+        this.setState({description: e.target.value});
     }
 
     handleSave() {
@@ -48,6 +58,32 @@ class EventCreateModal extends React.Component{
         this.setState({
             startDate: date
         });
+    }
+
+    handleAllDayChange(e) {
+        if(e.target.checked) {
+            console.log("checked");
+            this.setState({allDay: true});
+        } else {
+            console.log("unchecked");
+            this.setState({allDay: false});
+        }
+    }
+
+    onChangeSelect(e) {
+        if(e.target.value == 5) {
+            this.setState({newCause: true})
+        } else {
+            this.setState({cause: e.target.label})
+        }
+    }
+
+    returnToDefaultCause() {
+        this.setState({newCause: false});
+    }
+
+    changeCauseInput(e) {
+        this.setState({cause: e.target.value})
     }
 
     render(){
@@ -66,6 +102,25 @@ class EventCreateModal extends React.Component{
             'Clear': ''
         };
 
+        const {allDay} = this.state;
+
+        const {newCause} = this.state;
+
+        const options = [
+            { label: "meeting", value: 1 },
+            { label: "sick leave", value: 2 },
+            { label: "family reasons", value: 3 },
+            { label: "vacation", value: 4 },
+            { label: "create another", value: 5 }
+        ];
+
+        const toDefCauseStyle = {
+            cursor: 'pointer',
+            color: 'blue',
+            textDecoration: 'underline',
+            fontSize: '11px',
+        };
+
         return (
             <div className="modal-container">
                 <Modal
@@ -80,17 +135,52 @@ class EventCreateModal extends React.Component{
                     <Modal.Body>
                         <form>
                             <div className="form-group">
+                                <label>Who:</label>
+                                <input type="text"
+                                       className="form-control"
+                                       onChange={(e) => this.whoHandler(e)}
+                                />
+                            </div>
+                            <div className="form-group">
+                                <input type="checkbox" onChange={this.handleAllDayChange}/>
+                                <label>&nbsp;&nbsp;All day</label>
+                            </div>
+                            <div className="form-group">
                                 <label>From:</label>
-                                <input type='text' className="form-control" value={this.state.start}
-                                       onChange={(e) => this.blockNameHandler(e)}/>
+                                <DateTimeField type='text' className="form-control" dateTime={this.state.start}
+                                       onChange={(e) => this.blockNameHandler(e)}
+                                               mode={!allDay ? 'datetime' : 'date'}
+                                />
                             </div>
                             <div className="form-group">
                                 <label>To:</label>
-                                <textarea className="form-control" rows="3" value={this.state.end}
-                                          onChange={(e) => this.blockDescriptionHandler(e)}/>
+                                <DateTimeField className="form-control" dateTime={this.state.end}
+                                          onChange={(e) => this.blockDescriptionHandler(e)}
+                                               mode={!allDay ? 'datetime' : 'date'}
+                                />
                             </div>
                             <div className="form-group">
-                            <DateTimeField />
+                                <label>Cause:&nbsp;
+                                    {newCause ? <span style={toDefCauseStyle}
+                                                      onClick={this.returnToDefaultCause}
+                                        >defaults</span>
+                                        : ''}</label>
+                                {newCause ? <input type="text"
+                                                   className="form-control"
+                                                   onChange={this.changeCauseInput}
+                                    /> :
+                                    <SelectListGroup
+                                        placeholder="Add"
+                                        name="add"
+                                        onChange={this.onChangeSelect}
+                                        options={options}
+                                    />
+                                }
+                            </div>
+                            <div className="form-group">
+                                <label>Desc:</label>
+                                <textarea className="form-control" rows="2"
+                                          onChange={(e) => this.descriptionHandler(e)}/>
                             </div>
                         </form>
                     </Modal.Body>

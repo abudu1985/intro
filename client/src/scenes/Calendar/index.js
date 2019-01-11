@@ -22,6 +22,7 @@ class Calendar extends Component {
             startDate: '',
             endDate: ''
         }
+        this.saveCreateModalDetails = this.saveCreateModalDetails.bind(this);
     }
 
     componentWillMount() {
@@ -42,6 +43,21 @@ class Calendar extends Component {
         this.setState({ show: true, mode: 'update', selectedEvent: event});
     }
 
+    saveCreateModalDetails(item) {
+
+        const data = {
+            start: item.start,
+            end: item.end,
+            who: item.who,
+            initiator: '',
+            cause: item.cause,
+            description: item.description,
+            group: 2
+            //info: added ? "add: " + added : "" +  deleted ? ", deleted: " + deleted : "",
+        };
+        console.log(data);
+    }
+
     renderSwitch(param, modalData) {
         switch (param) {
             case 'update':
@@ -55,7 +71,7 @@ class Calendar extends Component {
                 return <EventCreateModal
                     modal={this.state.show}
                     block={modalData}
-                    saveCardsModalDetails={this.saveCardsModalDetails}
+                    saveModalDetails={this.saveCreateModalDetails}
                     cards={this.props.cards}
                     status={this.state.status}
                     start={this.state.startDate}
@@ -77,8 +93,8 @@ class Calendar extends Component {
                 },
                 {
                     'title': 'Conference',
-                    'start': new Date(2019, 0, 1),
-                    'end': new Date(2019, 0, 1),
+                    'start': new Date(2018, 11, 1),
+                    'end': new Date(2019, 0, 2),
                     desc: 'Big conference for important people'
                 },
                 {
