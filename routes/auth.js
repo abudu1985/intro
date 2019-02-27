@@ -45,39 +45,39 @@ passport.use(new LocalStrategy({
         return;
       }
     }
-    let ldap = new LDAP(
-      config.ldap,
-      config.ca,
-      config.ldapUser,
-      config.ldapPass
-    );
+    // let ldap = new LDAP(
+    //   config.ldap,
+    //   config.ca,
+    //   config.ldapUser,
+    //   config.ldapPass
+    // );
     try {
-      let loggedIn = await ldap.checkLogin(username, password);
-      if (!loggedIn) {
-
-          WrongLogin.findOneAndUpdate({ login: username },
-              { $inc: { count: 1 } },
-              {upsert: true, new: true },
-              function(err, response) {
-              if (err) {
-                  logger.error(err);
-              } else {
-                  logger.debug(response);
-              }
-          });
-
-        logger.debug("Failed to login! Wrong credentials");
-        done(null, false, {message: 'Incorrect login or password'});
-        return;
-      } else {
-          WrongLogin.findOneAndRemove({login: username}, function(err, response){
-              if (err) {
-                  logger.error(err);
-              } else {
-                  logger.debug(response);
-              }
-          });
-      }
+      // let loggedIn = await ldap.checkLogin(username, password);
+      // if (!loggedIn) {
+      //
+      //     WrongLogin.findOneAndUpdate({ login: username },
+      //         { $inc: { count: 1 } },
+      //         {upsert: true, new: true },
+      //         function(err, response) {
+      //         if (err) {
+      //             logger.error(err);
+      //         } else {
+      //             logger.debug(response);
+      //         }
+      //     });
+      //
+      //   logger.debug("Failed to login! Wrong credentials");
+      //   done(null, false, {message: 'Incorrect login or password'});
+      //   return;
+      // } else {
+      //     WrongLogin.findOneAndRemove({login: username}, function(err, response){
+      //         if (err) {
+      //             logger.error(err);
+      //         } else {
+      //             logger.debug(response);
+      //         }
+      //     });
+      // }
 
         const isDeletedAdmin = (data) => {
             if (data) { return true; }
@@ -95,7 +95,7 @@ passport.use(new LocalStrategy({
             return !isDeletedAdmin(el.deletedBy);
         });
 
-        let name = await ldap.getUserName(username);
+        let name = 'me'; //await ldap.getUserName(username);
 
         logger.debug("TRY SHOW FULL NAME...");
         logger.debug(name);
