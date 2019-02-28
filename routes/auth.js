@@ -45,40 +45,8 @@ passport.use(new LocalStrategy({
         return;
       }
     }
-    // let ldap = new LDAP(
-    //   config.ldap,
-    //   config.ca,
-    //   config.ldapUser,
-    //   config.ldapPass
-    // );
-    try {
-      // let loggedIn = await ldap.checkLogin(username, password);
-      // if (!loggedIn) {
-      //
-      //     WrongLogin.findOneAndUpdate({ login: username },
-      //         { $inc: { count: 1 } },
-      //         {upsert: true, new: true },
-      //         function(err, response) {
-      //         if (err) {
-      //             logger.error(err);
-      //         } else {
-      //             logger.debug(response);
-      //         }
-      //     });
-      //
-      //   logger.debug("Failed to login! Wrong credentials");
-      //   done(null, false, {message: 'Incorrect login or password'});
-      //   return;
-      // } else {
-      //     WrongLogin.findOneAndRemove({login: username}, function(err, response){
-      //         if (err) {
-      //             logger.error(err);
-      //         } else {
-      //             logger.debug(response);
-      //         }
-      //     });
-      // }
 
+    try {
         const isDeletedAdmin = (data) => {
             if (data) { return true; }
             return false
