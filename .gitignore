@@ -1,3 +1,6 @@
 node_modules/
 .vscode/*
 .idea
+client/package-lock.json
+package-lock.json
+external/keys_dev.js

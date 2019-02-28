@@ -8,6 +8,7 @@ const session = require('express-session');
 const bodyParser= require('body-parser');
 const mongoose = require('mongoose');
 const passport = require('passport');
+const path = require('path');
 
 const cards = require('./routes/cards');
 const auth = require('./routes/auth');
@@ -18,10 +19,11 @@ const blocks = require('./routes/blocks');
 const tags = require('./routes/tags');
 const logs = require('./routes/logs');
 const quickLink = require('./routes/quickLink');
-
+const MONGO_DB = require('./external/keys').mongoDB;
 
 
 mongoose.Promise = global.Promise;
+
 const app = express();
 
 app.use(bodyParser.json({limit: '10mb'}));
@@ -44,18 +46,28 @@ app.use('/tags', tags);
 app.use('/logs', logs);
 app.use('/quick_links', quickLink);
 
+// Server static assets if in production
+if (process.env.NODE_ENV === 'production') {
+  // Set static folder
+  app.use(express.static('client'));
+
+  app.get('*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, 'client', 'index.html'));
+  });
+}
+
 const Card = require('./models/card');
 
+//const MONGO_DB = config.mongoDB;
 
+logger.info(MONGO_DB);
 
-const MONGO_DB = config.mongoDB;
 mongoose.connect(MONGO_DB, {
   useMongoClient: true
 });
 
 let db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
-
 
 app.listen(config.port, () => {
   logger.info('App listening on port ' + config.port + '!');

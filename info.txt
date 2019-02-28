@@ -1,1 +1,8 @@
 https://github.com/quri/react-bootstrap-datetimepicker/tree/c0a368bf0d515e8180d1494b84b8bdd050e951ca
+
+heroku: ig1985@ukr.net --p: igor1985!
+
+u:abudu1985 p:1Q2w3e4r!  // mlab credentials
+
+ "email":"a@ukr.net", "i@ukr.net"
+ "password":"123456"

@@ -3,7 +3,7 @@
   "ldapPass": "hkfLJ7Fi83289fdKyi",
   "ldap": "ldaps://ldaps.cogniance.com:636",
   "logLevel": "debug",
-  "mongoDB": "mongodb://127.0.0.1/introcogniance",
+  "mongoDB": "mongodb://igor:1Q2w3e4r!@ds233323.mlab.com:33323/devconnector",
   "port": 3000,
   "additionalAdminLogin": "",
   "additionalAdminPassword": "",

@@ -4,7 +4,7 @@ let config = {
   ldapUser: 'nssproxy',
   ldapPass: 'hkfLJ7Fi83289fdKyi',
   logLevel: 'debug',
-  mongoDB: 'mongodb://127.0.0.1/introcogniance', //cgnintro',
+  mongoDB: 'mongodb://igor:1Q2w3e4r!@ds233323.mlab.com:33323/devconnector', //'mongodb://127.0.0.1/introcogniance', //cgnintro',
   ldap: 'ldaps://ldaps.cogniance.com:636',
   port: 3000,
   ca: '/etc/ssl/certs/rootca.crt',
